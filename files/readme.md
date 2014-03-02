@@ -7,3 +7,6 @@
 
 ## System Setup
 - Run bin/setup
+
+## Development
+- Run bin/clean to wipe everything and start fresh

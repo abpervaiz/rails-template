@@ -97,7 +97,9 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 # SYSTEM SETUP
 # -----------------------------
 file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
+file 'bin/clean', render_file("#{$path}/files/clean", app_name: app_name)
 run 'chmod +x bin/setup'
+run 'chmod +x bin/clean'
 
 optional_packages = []
 optional_packages << "node" if !$api_only
