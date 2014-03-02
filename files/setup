@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+path = File.expand_path(File.dirname(__FILE__))
+
+# Database
+system 'dropdb <%= app_name %>'
+system 'dropdb <%= app_name %>_test'
+system 'dropuser <%= app_name %>'
+system 'createuser -s <%= app_name %>'
+system 'createdb <%= app_name %>'
+system 'createdb <%= app_name %>_test'
+
+# Hombrew
+brewfile_path = "#{File.expand_path(path << "/..")}/Brewfile"
+brew_bundle_cmd = "brew bundle #{brewfile_path}"
+system brew_bundle_cmd
+
+# Git
+system 'git remote add production git@heroku.com:<%= app_name %>.git'
+system 'git remote add staging git@heroku.com:<%= app_name %>-staging.git'
