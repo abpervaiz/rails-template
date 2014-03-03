@@ -15,12 +15,12 @@ PREV_WORKERS=$(heroku ps --app $APP_NAME | grep "^worker." | wc -l | xargs)
 
 heroku maintenance:on --app $APP_NAME
 
-heroku scale worker=0 --app $APP_NAME
+heroku scale worker=0 --app $APP_NAME || true
 
 git push -f $REMOTE $SHA_TO_DEPLOY:refs/heads/master
 
 heroku run rake db:migrate db:seed --app $APP_NAME
 
-heroku scale worker=$PREV_WORKERS --app $APP_NAME
+heroku scale worker=$PREV_WORKERS --app $APP_NAME || true
 
 heroku maintenance:off --app $APP_NAME
