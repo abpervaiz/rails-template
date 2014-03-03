@@ -1,13 +1,13 @@
 #!/bin/sh -e
 
-if [ $# -ne 1 ]; then
-  echo 1>&2 "Usage: $0 <application name>"
+if [ $# -ne 2 ]; then
+  echo 1>&2 "Usage: $0 <application name> <branch>"
   exit 1
 fi
 
 APP_NAME=$1
 
-SHA_TO_DEPLOY=`git rev-parse HEAD`
+BRANCH=$2
 
 REMOTE=$(git remote -v | awk '{print $2}' | grep "${APP_NAME}.git" | uniq)
 
@@ -17,7 +17,7 @@ heroku maintenance:on --app $APP_NAME
 
 heroku scale worker=0 --app $APP_NAME || true
 
-git push -f $REMOTE $SHA_TO_DEPLOY:refs/heads/master
+git push -f $REMOTE $BRANCH:master
 
 heroku run rake db:migrate db:seed --app $APP_NAME
 
