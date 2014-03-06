@@ -79,6 +79,7 @@ gem_group :development, :test do
   gem 'factory_girl_rails'
   gem "database_cleaner", git: 'https://github.com/bmabey/database_cleaner.git'
   gem 'dotenv-rails'
+  gem 'timecop'
 end
 
 gem_group :production, :staging do
