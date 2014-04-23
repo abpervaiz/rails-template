@@ -9,7 +9,7 @@ APP_NAME=$1
 
 BRANCH=$2
 
-REMOTE=$(git remote -v | awk '{print $2}' | grep "${APP_NAME}.git" | uniq)
+REMOTE=$(git remote -v | awk '{print $2}' | grep "heroku" | grep "${APP_NAME}.git" | uniq)
 
 PREV_WORKERS=$(heroku ps --app $APP_NAME | grep "^worker." | wc -l | xargs)
 
