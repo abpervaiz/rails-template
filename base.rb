@@ -161,7 +161,6 @@ run 'touch .env'
 # -----------------------------
 # MAKE READY
 # -----------------------------
-git :init
 run 'bundle install'
 run './bin/setup'
 rake 'db:migrate'
@@ -216,6 +215,7 @@ insert_into_file 'spec/spec_helper.rb', "require 'webmock/rspec'\n",
 # -----------------------------
 # GIT
 # -----------------------------
+git :init
 append_file '.gitignore', "\n/public/assets/source_maps"
 git add: '.'
 git commit: %Q{ -m 'initial commit' }
