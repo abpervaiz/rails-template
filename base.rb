@@ -1,7 +1,7 @@
 require 'erb'
 require 'ostruct'
 
-$ruby_version = '2.1.1'
+$ruby_version = '2.1.2'
 $path = File.expand_path(File.dirname(__FILE__))
 
 # -----------------------------
