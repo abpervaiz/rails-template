@@ -28,7 +28,7 @@ end
 # -----------------------------
 # WATCHABLE LIB
 # -----------------------------
-# user require_dependecy to require
+# use require_dependecy to require
 insert_into_file 'config/application.rb', "\n    config.watchable_dirs['lib'] = [:rb]",
                  after: "  class Application < Rails::Application"
 
@@ -59,15 +59,13 @@ gsub_file 'app/assets/javascripts/application.js', /^.*require turbolinks.*$/,''
 # add gems
 gem 'pg'
 gem 'passenger'
-gem 'heroku'
 gem 'oj'
 gem 'slim-rails' if !$api_only
-gem 'simple_form' if !$api_only
-gem 'bower-rails' if !$api_only
 gem 'compass-rails' if !$api_only
 
 gem_group :development do
   gem 'pry-rails'
+  gem 'heroku'
   gem 'binding_of_caller'
   gem 'better_errors'
   gem 'coffee-rails-source-maps' if !$api_only
@@ -75,11 +73,12 @@ end
 
 gem_group :development, :test do
   gem 'rspec-rails'
+  gem 'awesome_print'
   gem 'webmock'
   gem 'factory_girl_rails'
-  gem "database_cleaner", git: 'https://github.com/bmabey/database_cleaner.git'
+  gem "database_cleaner"
   gem 'dotenv-rails'
-  gem 'timecop'
+  gem "spring-commands-rspec"
 end
 
 gem_group :production, :staging do
@@ -98,21 +97,21 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 # SYSTEM SETUP
 # -----------------------------
 file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
-file 'bin/clean', render_file("#{$path}/files/clean", app_name: app_name)
 run 'chmod +x bin/setup'
-run 'chmod +x bin/clean'
 
 optional_packages = []
-optional_packages << "node" if !$api_only
 file 'Brewfile', render_file("#{$path}/files/Brewfile", optional_packages: optional_packages)
 file 'bin/deploy', File.open("#{$path}/files/deploy").read
+file 'lib/tasks/dev.rake', File.open("#{$path}/files/dev.rake").read
 run "chmod +x bin/deploy"
 
 # -----------------------------
 # APIS
 # -----------------------------
-gsub_file 'app/controllers/application_controller.rb', /^.*protect_from_forgery with: :exception$/,
-          '  protect_from_forgery with: :null_session'
+if $api_only
+  gsub_file 'app/controllers/application_controller.rb', /^.*protect_from_forgery with: :exception$/,
+            '  protect_from_forgery with: :null_session'
+end
 
 # -----------------------------
 # VIEWS
@@ -161,34 +160,21 @@ run 'touch .env'
 # -----------------------------
 # MAKE READY
 # -----------------------------
+run "dropdb #{app_name}"
+run "dropdb #{app_name}_test"
+run "dropuser #{app_name}"
+run "createuser -s #{app_name}"
+run "createdb #{app_name}"
+run "createdb #{app_name}_test"
+
+brewfile_path = "#{File.expand_path('.')}/Brewfile"
+brew_bundle_cmd = "brew bundle #{brewfile_path}"
+system brew_bundle_cmd
+
 run 'bundle install'
-run './bin/setup'
-rake 'db:migrate'
+rake "db:migrate"
 generate 'rspec:install'
-
-if !$api_only
-  generate 'bower_rails:initialize'
-  generate 'simple_form:install'
-  run 'npm install bower'
-end
-
-# -----------------------------
-# BOWER
-# -----------------------------
-if !$api_only
-  run 'rm Bowerfile'
-  file 'Bowerfile', File.open("#{$path}/files/Bowerfile").read
-
-  insert_into_file 'app/assets/javascripts/application.js',
-                   "\n//= require rubyjs/ruby\n",
-                   after: "//= require jquery_ujs\n"
-
-  append_file 'app/assets/stylesheets/all.sass' do File.open("#{$path}/files/all.sass").read end
-  gsub_file 'config/initializers/bower_rails.rb', /^  # bower_rails.resolve_before_precompile = true$/,
-            '  bower_rails.resolve_before_precompile = true'
-
-  rake 'bower:install'
-end
+run 'bundle exec spring binstub --all'
 
 # -----------------------------
 # SPEC FILES ADDITIONS
@@ -216,6 +202,8 @@ insert_into_file 'spec/spec_helper.rb', "require 'webmock/rspec'\n",
 # GIT
 # -----------------------------
 git :init
+run "git remote add production git@heroku.com:#{app_name}.git"
+run "git remote add staging git@heroku.com:#{app_name}-staging.git"
 append_file '.gitignore', "\n/public/assets/source_maps"
 git add: '.'
 git commit: %Q{ -m 'initial commit' }
