@@ -141,6 +141,15 @@ else
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require_tree \.$/,
             '//= require app'
+
+  run 'touch app/assets/stylesheets/debug.css'
+  prepend_file 'app/assets/stylesheets/debug.css',
+               '/* = require pesticide */'
+
+  prepend_file 'config/initializers/assets.rb',
+               'Rails.application.config.assets.precompile += %w( debug.css )'
+
+  file 'vendor/assets/stylesheets/pesticide.scss', File.open("#{$path}/files/pesticide.scss").read
 end
 
 # -----------------------------
