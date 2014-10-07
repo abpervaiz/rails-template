@@ -65,6 +65,7 @@ gem 'compass-rails' if !$api_only
 
 gem_group :development do
   gem 'pry-rails'
+  gem 'brewdler'
   gem 'heroku'
   gem 'binding_of_caller'
   gem 'better_errors'
@@ -167,11 +168,9 @@ run "createuser -s #{app_name}"
 run "createdb #{app_name}"
 run "createdb #{app_name}_test"
 
-brewfile_path = "#{File.expand_path('.')}/Brewfile"
-brew_bundle_cmd = "brew bundle #{brewfile_path}"
-system brew_bundle_cmd
-
 run 'bundle install'
+run 'brewdle install'
+
 rake "db:migrate"
 generate 'rspec:install'
 run 'bundle exec spring binstub --all'

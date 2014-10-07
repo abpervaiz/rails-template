@@ -10,9 +10,7 @@ system 'createdb <%= app_name %>'
 system 'createdb <%= app_name %>_test'
 
 # Hombrew
-brewfile_path = "#{File.expand_path(path << "/..")}/Brewfile"
-brew_bundle_cmd = "brew bundle #{brewfile_path}"
-system brew_bundle_cmd
+system 'bundle exec brewdle install'
 
 # Git
 system 'git remote add production git@heroku.com:<%= app_name %>.git'
