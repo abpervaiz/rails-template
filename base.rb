@@ -45,6 +45,9 @@ file 'readme.md', render_file("#{$path}/files/readme.md", app_title: app_name.hu
 insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
                  after: "source 'https://rubygems.org'\n"
 
+insert_into_file 'Gemfile', "source 'https://rails-assets.org'",
+                 after: "source 'https://rubygems.org'\n"
+
 # remove gems
 gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']turbolinks["'].*$/,''
@@ -62,6 +65,8 @@ gem 'passenger'
 gem 'oj'
 gem 'slim-rails' if !$api_only
 gem 'compass-rails' if !$api_only
+
+gem 'rails-assets-normalize.css' if !$api_only
 
 gem_group :development do
   gem 'pry-rails'
@@ -132,10 +137,16 @@ if $api_only
   run 'rm -rf app/assets'
   run 'rm -rf vendor/assets'
 else
-  run 'touch app/assets/stylesheets/all.sass'
+  css_manifest = <<eos
+ *= require normalize.css/normalize
+ *= requre all
+eos
+
+  run 'mkdir app/assets/stylesheets/application'
+  run 'touch app/assets/stylesheets/application/all.sass'
   gsub_file "app/assets/stylesheets/application.css",
             /^.*require_tree \.$/,
-            ' *= require all'
+            css_manifest
 
   run 'touch app/assets/javascripts/app.coffee'
   gsub_file 'app/assets/javascripts/application.js',
