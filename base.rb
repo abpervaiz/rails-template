@@ -13,7 +13,7 @@ $api_only = yes?('is this an api only application?')
 # HELPER FUCTIONS
 # -----------------------------
 def render_file(path, variables)
-  file = File.open(path).read
+  file = IO.read(path)
   struct = OpenStruct.new(variables)
   rendered_file = ERB.new(file).result(struct.instance_eval { binding })
 end
@@ -116,8 +116,8 @@ run 'chmod +x bin/setup'
 
 optional_packages = []
 file 'Brewfile', render_file("#{$path}/files/Brewfile", optional_packages: optional_packages)
-file 'bin/deploy', File.open("#{$path}/files/deploy").read
-file 'lib/tasks/dev.rake', File.open("#{$path}/files/dev.rake").read
+file 'bin/deploy', IO.read("#{$path}/files/deploy")
+file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
 run "chmod +x bin/deploy"
 
 # -----------------------------
@@ -170,19 +170,19 @@ eos
   prepend_file 'config/initializers/assets.rb',
                'Rails.application.config.assets.precompile += %w( debug.css )'
 
-  file 'vendor/assets/stylesheets/pesticide.scss', File.open("#{$path}/files/pesticide.scss").read
+  file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
 
 # -----------------------------
 # PASSENGER
 # -----------------------------
-file 'Procfile', File.open("#{$path}/files/Procfile").read
+file 'Procfile', IO.read("#{$path}/files/Procfile")
 
 # -----------------------------
 # Guard
 # -----------------------------
 if !$api_only
-  file 'Guardfile', File.open("#{$path}/files/Guardfile").read
+  file 'Guardfile', IO.read("#{$path}/files/Guardfile")
 end
 
 # -----------------------------
