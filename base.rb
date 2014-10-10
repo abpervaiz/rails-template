@@ -70,28 +70,43 @@ gem 'compass-rails' if !$api_only
 gem 'rails-assets-normalize.css' if !$api_only
 
 gem_group :development do
-  gem 'pry-rails'
-  gem 'brewdler'
-  gem 'heroku'
-  gem 'binding_of_caller'
-  gem 'better_errors'
-  gem 'coffee-rails-source-maps' if !$api_only
+  gem "brewdler"
+  gem "heroku"
+  gem "better_errors"
+  gem "binding_of_caller"
+  gem "coffee-rails-source-maps" if !$api_only
+  gem 'guard' if !$api_only
+  gem 'rb-fsevent' if !$api_only
+  gem 'guard-livereload', require: false if !$api_only
+  gem "rack-livereload" if !$api_only
+end
+
+gem_group :test do
+  gem "spring-commands-rspec"
+  gem "rspec-rails"
+  gem "webmock"
+  gem "factory_girl_rails"
+  gem "database_cleaner"
 end
 
 gem_group :development, :test do
-  gem 'rspec-rails'
-  gem 'awesome_print'
-  gem 'webmock'
-  gem 'factory_girl_rails'
-  gem "database_cleaner"
-  gem 'dotenv-rails'
-  gem "spring-commands-rspec"
+  gem "awesome_print"
+  gem "pry-rails"
+  gem "dotenv-rails"
 end
 
 gem_group :production, :staging do
   gem 'rails_12factor'
   gem 'rails_stdout_logging'
   gem 'rails_serve_static_assets'
+end
+
+# -----------------------------
+# LIVERELOAD
+# -----------------------------
+if !$api_only
+  insert_into_file 'config/environments/development.rb', "  config.middleware.insert_before Rack::Lock, Rack::LiveReload\n",
+                    after: "Rails.application.configure do\n"
 end
 
 # -----------------------------
@@ -169,6 +184,13 @@ end
 # PASSENGER
 # -----------------------------
 file 'Procfile', File.open("#{$path}/files/Procfile").read
+
+# -----------------------------
+# Guard
+# -----------------------------
+if !$api_only
+  file 'Guardfile', File.open("#{$path}/files/Guardfile").read
+end
 
 # -----------------------------
 # RSPEC
