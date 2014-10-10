@@ -34,14 +34,12 @@ file 'readme.md', render_file("#{$path}/files/readme.md", app_title: app_name.hu
 # -----------------------------
 # GEMFILE
 # -----------------------------
-# specify ruby version
 insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
                  after: "source 'https://rubygems.org'\n"
 
 insert_into_file 'Gemfile', "source 'https://rails-assets.org'",
                  after: "source 'https://rubygems.org'\n"
 
-# remove gems
 gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']turbolinks["'].*$/,''
 gsub_file 'Gemfile', /^\s+gem\s+["']sdoc["'].*$/,''
@@ -52,7 +50,6 @@ gsub_file 'Gemfile', /^gem\s+["']jquery-rails["'].*$/,'' if $api_only
 
 gsub_file 'app/assets/javascripts/application.js', /^.*require turbolinks.*$/,'' if !$api_only
 
-# add gems
 gem 'rack-mini-profiler' if !$api_only
 gem 'pg'
 gem 'passenger'
