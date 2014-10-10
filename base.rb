@@ -5,13 +5,6 @@ $ruby_version = '2.1.2'
 $path = File.expand_path(File.dirname(__FILE__))
 
 # -----------------------------
-# NOTES
-# -----------------------------
-# /usr/local/bin should be in your path (for both homebrew and npm stuff)
-# Postgres (use postgres.app from https://github.com/PostgresApp/PostgresApp/releases)
-# Hombrew
-
-# -----------------------------
 # QUESTIONS
 # -----------------------------
 $api_only = yes?('is this an api only application?')
