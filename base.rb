@@ -149,10 +149,11 @@ eos
             /^.*require_tree \.$/,
             css_manifest
 
-  run 'touch app/assets/javascripts/app.coffee'
+  run 'mkdir app/assets/javascripts/application'
+  run 'touch app/assets/javascripts/application/app.coffee'
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require_tree \.$/,
-            '//= require app'
+            '//= require application/app'
 
   run 'touch app/assets/stylesheets/debug.css'
   prepend_file 'app/assets/stylesheets/debug.css',
