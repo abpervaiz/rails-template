@@ -125,6 +125,15 @@ if $api_only
             '  protect_from_forgery with: :null_session'
 end
 
+
+# -----------------------------
+# HELPER
+# -----------------------------
+if !$api_only
+  run 'rm app/helpers/application_helper.rb'
+  file 'app/helpers/application_helper.rb', IO.read("#{$path}/files/application_helper.rb")
+end
+
 # -----------------------------
 # VIEWS
 # -----------------------------
@@ -148,6 +157,14 @@ else
  *= require application/all
 eos
 
+  asset_initializer = <<-'eos'
+all_js = Dir.glob("#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\w|-)*)/] + ".js" }
+all_css = Dir.glob("#{Rails.root}/app/assets/stylesheets/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\w|-)*)/] + ".css" }
+assets = (all_js + all_css).select { |f| !f.include?('application') }
+
+Rails.application.config.assets.precompile += assets
+eos
+
   run 'mkdir app/assets/stylesheets/application'
   run 'touch app/assets/stylesheets/application/all.sass'
   gsub_file "app/assets/stylesheets/application.css",
@@ -165,7 +182,7 @@ eos
                '/* = require pesticide */'
 
   prepend_file 'config/initializers/assets.rb',
-               'Rails.application.config.assets.precompile += %w( debug.css )'
+               asset_initializer
 
   file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
