@@ -176,7 +176,7 @@ end
 file 'Procfile', IO.read("#{$path}/files/Procfile")
 
 # -----------------------------
-# Guard
+# GUARD
 # -----------------------------
 if !$api_only
   file 'Guardfile', IO.read("#{$path}/files/Guardfile")
