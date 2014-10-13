@@ -145,7 +145,7 @@ if $api_only
 else
   css_manifest = <<eos
  *= require normalize.css/normalize
- *= requre all
+ *= require application/all
 eos
 
   run 'mkdir app/assets/stylesheets/application'
