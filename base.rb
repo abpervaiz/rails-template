@@ -205,7 +205,7 @@ run "createdb #{app_name}_test"
 run 'bundle install'
 run 'brewdle install'
 
-rake "db:migrate"
+rake 'db:migrate'
 generate 'rspec:install'
 
 run 'bundle exec spring binstub --all'
