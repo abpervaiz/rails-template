@@ -60,29 +60,29 @@ gem 'compass-rails' if !$api_only
 gem 'rails-assets-normalize.css' if !$api_only
 
 gem_group :development do
-  gem "brewdler"
-  gem "heroku"
-  gem "better_errors"
-  gem "binding_of_caller"
-  gem "coffee-rails-source-maps" if !$api_only
+  gem 'brewdler'
+  gem 'heroku'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'coffee-rails-source-maps' if !$api_only
   gem 'guard' if !$api_only
   gem 'rb-fsevent' if !$api_only
   gem 'guard-livereload', require: false if !$api_only
-  gem "rack-livereload" if !$api_only
+  gem 'rack-livereload' if !$api_only
 end
 
 gem_group :test do
-  gem "spring-commands-rspec"
-  gem "rspec-rails"
-  gem "webmock"
-  gem "factory_girl_rails"
-  gem "database_cleaner"
+  gem 'spring-commands-rspec'
+  gem 'rspec-rails'
+  gem 'webmock'
+  gem 'factory_girl_rails'
+  gem 'database_cleaner'
 end
 
 gem_group :development, :test do
-  gem "awesome_print"
-  gem "pry-rails"
-  gem "dotenv-rails"
+  gem 'awesome_print'
+  gem 'pry-rails'
+  gem 'dotenv-rails'
 end
 
 gem_group :production, :staging do
@@ -115,7 +115,7 @@ optional_packages = []
 file 'Brewfile', render_file("#{$path}/files/Brewfile", optional_packages: optional_packages)
 file 'bin/deploy', IO.read("#{$path}/files/deploy")
 file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
-run "chmod +x bin/deploy"
+run 'chmod +x bin/deploy'
 
 # -----------------------------
 # APIS
