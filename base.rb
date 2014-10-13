@@ -208,6 +208,8 @@ run 'brewdle install'
 rake "db:migrate"
 generate 'rspec:install'
 
+run 'bundle exec spring binstub --all'
+
 # -----------------------------
 # SPEC FILES ADDITIONS
 # -----------------------------
