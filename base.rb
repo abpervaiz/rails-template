@@ -81,6 +81,7 @@ end
 
 gem_group :development, :test do
   gem 'awesome_print'
+  gem 'faker'
   gem 'pry-rails'
   gem 'dotenv-rails'
 end
