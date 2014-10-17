@@ -173,7 +173,7 @@ eos
             css_manifest
 
   run 'mkdir app/assets/javascripts/application'
-  run 'touch app/assets/javascripts/application/app.coffee'
+  file 'app/assets/javascripts/application/app.coffee', render_file("#{$path}/files/app.coffee", app_name: app_name.gsub('-', '_').camelize)
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require_tree \.$/,
             '//= require application/app'
