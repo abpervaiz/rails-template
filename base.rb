@@ -93,6 +93,25 @@ gem_group :production, :staging do
 end
 
 # -----------------------------
+# APPLICATION.RB
+# -----------------------------
+# Pick pieces from https://github.com/rails/rails/blob/master/railties/lib/rails/all.rb
+gsub_file 'config/application.rb', /^.*require 'rails\/all'$/,
+          parts = <<eos
+require 'active_record/railtie'
+require 'action_controller/railtie'
+require 'action_view/railtie'
+require 'rails/test_unit/railtie'
+require 'sprockets/railtie'
+eos
+
+gsub_file 'config/environments/development.rb', /^.*config\.action_mailer\.raise_delivery_errors = false$/,
+          '  # config.action_mailer.raise_delivery_errors = false'
+
+gsub_file 'config/environments/test.rb', /^.*config\.action_mailer\.delivery_method = :test$/,
+          '  # config.action_mailer.delivery_method = :test'
+
+# -----------------------------
 # LIVERELOAD
 # -----------------------------
 if !$api_only
