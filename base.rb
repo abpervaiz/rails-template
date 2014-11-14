@@ -72,8 +72,8 @@ gem_group :development do
 end
 
 gem_group :test do
-  gem 'capybara'
-  gem 'poltergeist'
+  gem 'capybara' if !$api_only
+  gem 'poltergeist' if !$api_only
   gem 'spring-commands-rspec'
   gem 'rspec-rails'
   gem 'webmock'
@@ -132,7 +132,9 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
 run 'chmod +x bin/setup'
 
-packages = ['phantomjs']
+packages = []
+packages << 'phantomjs' if !$api_only
+
 file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
 file 'bin/deploy', IO.read("#{$path}/files/deploy")
 file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
@@ -259,8 +261,6 @@ run 'bundle exec spring binstub --all'
 # SPEC FILES ADDITIONS
 # -----------------------------
 spec_helper_additions = <<eos
-  Capybara.javascript_driver = :poltergeist
-
   config.include FactoryGirl::Syntax::Methods
 
   config.before(:all) do
@@ -278,10 +278,13 @@ environment 'config.allow_concurrency = false', env: 'test'
 insert_into_file 'spec/spec_helper.rb', spec_helper_additions,
                  after: "RSpec.configure do |config|\n"
 
+insert_into_file 'spec/spec_helper.rb', "  Capybara.javascript_driver = :poltergeist\n",
+                 after: "RSpec.configure do |config|\n" if !$api_only
+
 prepend_file 'spec/spec_helper.rb', "require 'webmock/rspec'\n"
 prepend_file 'spec/spec_helper.rb', "require 'factory_girl_rails'\n"
-prepend_file 'spec/spec_helper.rb', "require 'capybara/poltergeist'\n"
-prepend_file 'spec/spec_helper.rb', "require 'capybara'\n"
+prepend_file 'spec/spec_helper.rb', "require 'capybara/poltergeist'\n" if !$api_only
+prepend_file 'spec/spec_helper.rb', "require 'capybara'\n" if !$api_only
 
 # -----------------------------
 # GIT
