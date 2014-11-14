@@ -22,8 +22,7 @@ end
 # WATCHABLE LIB
 # -----------------------------
 # use require_dependecy to require
-insert_into_file 'config/application.rb', "\n    config.watchable_dirs['lib'] = [:rb]",
-                 after: "  class Application < Rails::Application"
+environment "config.watchable_dirs['lib'] = [:rb]"
 
 # -----------------------------
 # DOCUMENTATION
@@ -37,8 +36,7 @@ file 'readme.md', render_file("#{$path}/files/readme.md", app_title: app_name.hu
 insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
                  after: "source 'https://rubygems.org'\n"
 
-insert_into_file 'Gemfile', "source 'https://rails-assets.org'",
-                 after: "source 'https://rubygems.org'\n"
+add_source 'https://rails-assets.org'
 
 gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']turbolinks["'].*$/,''
@@ -117,8 +115,7 @@ gsub_file 'config/environments/test.rb', /^.*config\.action_mailer\.delivery_met
 # LIVERELOAD
 # -----------------------------
 if !$api_only
-  insert_into_file 'config/environments/development.rb', "  config.middleware.insert_before Rack::Lock, Rack::LiveReload\n",
-                    after: "Rails.application.configure do\n"
+  environment 'config.middleware.insert_before Rack::Lock, Rack::LiveReload', env: 'development'
 end
 
 # -----------------------------
