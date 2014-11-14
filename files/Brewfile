@@ -1,2 +1,1 @@
-<% optional_packages.each do |pkg| %>
-<%= "install #{pkg}" %><% end %>
+<% optional_packages.each do |pkg| %><%= "brew '#{pkg}'" %><% end %>
