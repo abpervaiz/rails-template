@@ -132,8 +132,8 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
 run 'chmod +x bin/setup'
 
-optional_packages = ['phantomjs']
-file 'Brewfile', render_file("#{$path}/files/Brewfile", optional_packages: optional_packages)
+packages = ['phantomjs']
+file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
 file 'bin/deploy', IO.read("#{$path}/files/deploy")
 file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
 run 'chmod +x bin/deploy'
