@@ -72,6 +72,8 @@ gem_group :development do
 end
 
 gem_group :test do
+  gem 'capybara'
+  gem 'poltergeist'
   gem 'spring-commands-rspec'
   gem 'rspec-rails'
   gem 'webmock'
@@ -130,7 +132,7 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
 run 'chmod +x bin/setup'
 
-optional_packages = []
+optional_packages = ['phantomjs']
 file 'Brewfile', render_file("#{$path}/files/Brewfile", optional_packages: optional_packages)
 file 'bin/deploy', IO.read("#{$path}/files/deploy")
 file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
@@ -257,6 +259,8 @@ run 'bundle exec spring binstub --all'
 # SPEC FILES ADDITIONS
 # -----------------------------
 spec_helper_additions = <<eos
+  Capybara.javascript_driver = :poltergeist
+
   config.include FactoryGirl::Syntax::Methods
 
   config.before(:all) do
@@ -269,11 +273,15 @@ spec_helper_additions = <<eos
   end
 eos
 
+environment 'config.allow_concurrency = false', env: 'test'
+
 insert_into_file 'spec/spec_helper.rb', spec_helper_additions,
                  after: "RSpec.configure do |config|\n"
 
 prepend_file 'spec/spec_helper.rb', "require 'webmock/rspec'\n"
 prepend_file 'spec/spec_helper.rb', "require 'factory_girl_rails'\n"
+prepend_file 'spec/spec_helper.rb', "require 'capybara/poltergeist'\n"
+prepend_file 'spec/spec_helper.rb', "require 'capybara'\n"
 
 # -----------------------------
 # GIT
