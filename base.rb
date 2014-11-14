@@ -54,6 +54,7 @@ gem 'rack-mini-profiler' if !$api_only
 gem 'pg'
 gem 'passenger'
 gem 'oj'
+gem 'slowpoke'
 gem 'slim-rails' if !$api_only
 gem 'compass-rails' if !$api_only
 
@@ -227,7 +228,7 @@ run 'rm -rf test'
 # -----------------------------
 # DOTENV
 # -----------------------------
-run 'touch .env'
+file '.env', IO.read("#{$path}/files/env")
 
 # -----------------------------
 # MAKE READY
@@ -244,6 +245,7 @@ run 'brewdle install'
 
 rake 'db:migrate'
 generate 'rspec:install'
+generate 'slowpoke:install' if !$api_only
 
 run 'bundle exec spring binstub --all'
 

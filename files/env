@@ -1,0 +1,3 @@
+# specify timeouts for slowpoke
+REQUEST_TIMEOUT=10
+DATABASE_TIMEOUT=10
