@@ -55,6 +55,7 @@ gem 'pg'
 gem 'passenger'
 gem 'oj'
 gem 'slowpoke'
+gem 'rack-attack'
 gem 'slim-rails' if !$api_only
 gem 'compass-rails' if !$api_only
 
@@ -207,6 +208,12 @@ eos
 
   file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
+
+# -----------------------------
+# RACK ATTACK
+# -----------------------------
+initializer 'rack-attack.rb', IO.read("#{$path}/files/rack-attack.rb")
+environment 'config.middleware.use Rack::Attack'
 
 # -----------------------------
 # PASSENGER
