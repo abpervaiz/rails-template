@@ -273,6 +273,13 @@ spec_helper_additions = <<eos
   end
 eos
 
+spec_helper_additions << <<eos if !$api_only
+
+  config.before(:each, js: true) do
+    page.driver.browser.url_blacklist = ["http://use.typekit.net"]
+  end
+eos
+
 environment 'config.allow_concurrency = false', env: 'test'
 
 insert_into_file 'spec/spec_helper.rb', spec_helper_additions,
