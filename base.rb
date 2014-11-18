@@ -261,6 +261,8 @@ run 'bundle exec spring binstub --all'
 # SPEC FILES ADDITIONS
 # -----------------------------
 spec_helper_additions = <<eos
+  config.include ActiveSupport::Testing::TimeHelpers
+
   config.include FactoryGirl::Syntax::Methods
 
   config.before(:all) do
@@ -288,6 +290,7 @@ insert_into_file 'spec/spec_helper.rb', spec_helper_additions,
 insert_into_file 'spec/spec_helper.rb', "  Capybara.javascript_driver = :poltergeist\n",
                  after: "RSpec.configure do |config|\n" if !$api_only
 
+prepend_file 'spec/spec_helper.rb', "require 'active_support/testing/time_helpers'\n"
 prepend_file 'spec/spec_helper.rb', "require 'webmock/rspec'\n"
 prepend_file 'spec/spec_helper.rb', "require 'factory_girl_rails'\n"
 prepend_file 'spec/spec_helper.rb', "require 'capybara/poltergeist'\n" if !$api_only
