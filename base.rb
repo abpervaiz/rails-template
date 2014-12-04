@@ -65,6 +65,7 @@ gem_group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'coffee-rails-source-maps' if !$api_only
+  gem 'quiet_assets' if !$api_only
   gem 'guard' if !$api_only
   gem 'rb-fsevent' if !$api_only
   gem 'guard-livereload', require: false if !$api_only
