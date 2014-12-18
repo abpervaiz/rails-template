@@ -58,6 +58,7 @@ gem 'slim-rails' if !$api_only
 gem 'compass-rails' if !$api_only
 
 gem 'rails-assets-normalize.css' if !$api_only
+gem 'rails-assets-lodash' if !$api_only
 
 gem_group :development do
   gem 'brewdler'
@@ -208,6 +209,8 @@ eos
   prepend_file 'config/initializers/assets.rb',
                asset_initializer
 
+  insert_into_file 'app/assets/javascripts/application.js', '//= require lodash/lodash',
+                   after: "//= require jquery_ujs\n"
   file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
 
