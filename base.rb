@@ -211,6 +211,11 @@ eos
 
   insert_into_file 'app/assets/javascripts/application.js', '//= require lodash/lodash',
                    after: "//= require jquery_ujs\n"
+
+  gsub_file 'app/assets/javascripts/application.js',
+            /^\/\/= require jquery\n/,
+            "//= require jquery2\n"
+
   file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
 
