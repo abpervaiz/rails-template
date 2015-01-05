@@ -48,7 +48,6 @@ gsub_file 'Gemfile', /^gem\s+["']jquery-rails["'].*$/,'' if $api_only
 
 gsub_file 'app/assets/javascripts/application.js', /^.*require turbolinks.*$/,'' if !$api_only
 
-gem 'rack-mini-profiler' if !$api_only
 gem 'pg'
 gem 'passenger'
 gem 'oj'
