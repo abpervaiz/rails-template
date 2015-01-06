@@ -130,6 +130,7 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 # -----------------------------
 # SYSTEM SETUP
 # -----------------------------
+run 'rm bin/setup'
 file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
 run 'chmod +x bin/setup'
 

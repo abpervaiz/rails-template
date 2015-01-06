@@ -1,17 +1,26 @@
 #!/usr/bin/env ruby
-path = File.expand_path(File.dirname(__FILE__))
+require 'pathname'
 
-# Database
-system 'dropdb <%= app_name %>'
-system 'dropdb <%= app_name %>_test'
-system 'dropuser <%= app_name %>'
-system 'createuser -s <%= app_name %>'
-system 'createdb <%= app_name %>'
-system 'createdb <%= app_name %>_test'
+APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
 
-# Hombrew
-system 'bundle exec brewdle install'
+Dir.chdir APP_ROOT do
+  puts 'Gems...'
+  system 'bundle check || bundle install'
 
-# Git
-system 'git remote add production git@heroku.com:<%= app_name %>.git'
-system 'git remote add staging git@heroku.com:<%= app_name %>-staging.git'
+  puts 'Database...'
+  system 'dropdb <%= app_name %>'
+  system 'dropdb <%= app_name %>_test'
+  system 'dropuser <%= app_name %>'
+  system 'createuser -s <%= app_name %>'
+  system 'createdb <%= app_name %>'
+  system 'createdb <%= app_name %>_test'
+
+  system 'rake dev:reset'
+
+  puts 'Homebrew...'
+  system 'brewdle install'
+
+  puts 'Git...'
+  system 'git remote add production git@heroku.com:<%= app_name %>.git'
+  system 'git remote add staging git@heroku.com:<%= app_name %>-staging.git'
+end
