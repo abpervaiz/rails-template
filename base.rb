@@ -312,5 +312,5 @@ git :init
 run "git remote add production git@heroku.com:#{app_name}.git"
 run "git remote add staging git@heroku.com:#{app_name}-staging.git"
 append_file '.gitignore', "\n/public/assets/source_maps"
-git add: '.'
+git add: %Q{ --all }
 git commit: %Q{ -m 'initial commit' }
