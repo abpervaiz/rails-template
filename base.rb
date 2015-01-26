@@ -63,7 +63,6 @@ gem_group :development do
   gem 'brewdler'
   gem 'heroku'
   gem 'better_errors'
-  gem 'binding_of_caller'
   gem 'coffee-rails-source-maps' if !$api_only
   gem 'quiet_assets' if !$api_only
   gem 'guard' if !$api_only
@@ -86,6 +85,7 @@ gem_group :development, :test do
   gem 'awesome_print'
   gem 'faker'
   gem 'pry-rails'
+  gem 'binding_of_caller'
   gem 'dotenv-rails'
 end
 
