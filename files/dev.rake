@@ -11,9 +11,9 @@ namespace :dev do
 
     task :test do
       rake = "#{Rails.root}/bin/rake"
-      system("#{rake} db:drop rails_env=test")
-      system("#{rake} db:create rails_env=test")
-      system("#{rake} db:schema:load rails_env=test")
+      system("#{rake} db:drop RAILS_ENV=test")
+      system("#{rake} db:create RAILS_ENV=test")
+      system("#{rake} db:schema:load RAILS_ENV=test")
     end
   end
 end
