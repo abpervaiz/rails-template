@@ -289,6 +289,7 @@ rails_helper_additions = <<eos
   config.before(:all) do
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
+    FactoryGirl.lint
   end
 
   config.after(:all) do
