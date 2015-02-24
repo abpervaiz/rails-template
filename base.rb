@@ -75,13 +75,13 @@ gem_group :test do
   gem 'capybara' if !$api_only
   gem 'poltergeist' if !$api_only
   gem 'spring-commands-rspec'
-  gem 'rspec-rails'
   gem 'webmock'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
 end
 
 gem_group :development, :test do
+  gem 'rspec-rails'
   gem 'awesome_print'
   gem 'faker'
   gem 'pry-rails'
