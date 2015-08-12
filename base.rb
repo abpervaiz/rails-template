@@ -60,7 +60,6 @@ gem 'rails-assets-normalize.css' if !$api_only
 gem 'rails-assets-lodash' if !$api_only
 
 gem_group :development do
-  gem 'brewdler'
   gem 'heroku'
   gem 'better_errors'
   gem 'coffee-rails-source-maps' if !$api_only
@@ -137,6 +136,7 @@ run 'chmod +x bin/setup'
 packages = []
 packages << 'phantomjs' if !$api_only
 
+system 'brew tap Homebrew/brewdler'
 file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
 file 'bin/deploy', IO.read("#{$path}/files/deploy")
 file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
