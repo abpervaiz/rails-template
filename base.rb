@@ -219,7 +219,7 @@ eos
   file 'app/assets/javascripts/application/app.coffee', render_file("#{$path}/files/app.coffee", app_name: app_name.gsub('-', '_').camelize)
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require_tree \.$/,
-            '//= require application/app'
+            '//= require_tree ./application'
 
   run 'touch app/assets/stylesheets/debug.css'
   prepend_file 'app/assets/stylesheets/debug.css',
@@ -240,6 +240,16 @@ eos
 
   file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
+
+# -----------------------------
+# JS-RAILS INTERCHANGE
+# -----------------------------
+file 'app/controllers/concerns/interchange.rb', IO.read("#{$path}/files/interchange.rb")
+file 'lib/assets/javascripts/interchange.coffee', IO.read("#{$path}/files/interchange.coffee")
+insert_into_file 'app/controllers/application_controller.rb', "  include Interchange\n",
+                 after: "class ApplicationController < ActionController::Base\n"
+insert_into_file 'app/assets/javascripts/application.js', "\n//= require interchange\n",
+                 before: "\n//= require_tree ./application"
 
 # -----------------------------
 # RACK ATTACK
