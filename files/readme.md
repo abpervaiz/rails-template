@@ -8,4 +8,4 @@
 - Run bin/setup
 
 ## Development
-- Run rake dev:reset to wipe everything and start fresh
+- Run rake dev:init to wipe everything and start fresh
