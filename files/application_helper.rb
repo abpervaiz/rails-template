@@ -1,15 +1,25 @@
 module ApplicationHelper
-  def js_for_action
-    file = "#{params[:controller]}-#{params[:action]}"
+  def all_js
+    if Rails.env.production?
+      <%= app_name %>::Application::ALL_JS
+    else
+      <%= app_name %>::Application.all_js
+    end
+  end
 
-    all_js = Dir.glob("#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\w|-)*)/] }
-    all_js.include?(file) ? file : ""
+  def controller_name
+    params[:controller].gsub(/\//, '~')
+  end
+
+  def js_for_action
+    file = "#{controller_name}-#{params[:action]}"
+
+    @action_js ||= all_js[file] ? file : nil
   end
 
   def js_for_controller
-    file = params[:controller]
+    file = controller_name
 
-    all_js = Dir.glob("#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\w|-)*)/] }
-    all_js.include?(file) ? file : ""
+    @controller_js ||= all_js[file] ? file : nil
   end
 end

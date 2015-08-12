@@ -156,7 +156,7 @@ end
 # -----------------------------
 if !$api_only
   run 'rm app/helpers/application_helper.rb'
-  file 'app/helpers/application_helper.rb', IO.read("#{$path}/files/application_helper.rb")
+  file 'app/helpers/application_helper.rb', render_file("#{$path}/files/application_helper.rb", app_name: app_name.camelize)
 end
 
 # -----------------------------
@@ -182,12 +182,31 @@ else
  *= require application/all
 eos
 
-  asset_initializer = <<-'eos'
-all_js = Dir.glob("#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\w|-)*)/] + ".js" }
-all_css = Dir.glob("#{Rails.root}/app/assets/stylesheets/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\w|-)*)/] + ".css" }
-assets = (all_js + all_css).select { |f| !f.include?('application') }
+  asset_initializer = <<eos
+Rails.application.config.assets.precompile += #{app_name.camelize}::Application.all_assets
+eos
 
-Rails.application.config.assets.precompile += assets
+  application_rb_additions = <<eos
+
+    def top_level_js
+      Dir.glob("\#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\\w|-|~)*)/] + ".js" }
+    end
+
+    def top_level_css
+      Dir.glob("\#{Rails.root}/app/assets/stylesheets/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\\w|-|~)*)/] + ".css" }
+    end
+
+    def all_assets
+      assets = (top_level_js + top_level_css).select { |f| !f.include?('application') }
+    end
+
+    def all_js
+      file_list = Dir.glob("\#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\\w|-|~)*)/] }
+      file_list.map { |file| [file, true] }.to_h
+    end
+
+    ALL_JS = all_js
+
 eos
 
   run 'mkdir app/assets/stylesheets/application'
@@ -211,6 +230,9 @@ eos
 
   insert_into_file 'app/assets/javascripts/application.js', '//= require lodash/lodash',
                    after: "//= require jquery_ujs\n"
+
+  insert_into_file 'config/application.rb', application_rb_additions,
+                   after: "  class Application < Rails::Application\n"
 
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require jquery\n/,
