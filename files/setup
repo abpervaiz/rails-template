@@ -18,7 +18,8 @@ Dir.chdir APP_ROOT do
   system 'rake dev:reset'
 
   puts 'Homebrew...'
-  system 'brewdle install'
+  system 'brew tap Homebrew/bundle'
+  system 'brew bundle'
 
   puts 'Git...'
   system 'git remote add production git@heroku.com:<%= app_name %>.git'
