@@ -68,6 +68,10 @@ gem_group :development do
   gem 'rb-fsevent' if !$api_only
   gem 'guard-livereload', require: false if !$api_only
   gem 'rack-livereload' if !$api_only
+  gem 'rack-mini-profiler' if !$api_only
+  gem 'flamegraph' if !$api_only
+  gem 'stackprof' if !$api_only
+  gem 'memory_profiler' if !$api_only
 end
 
 gem_group :test do
