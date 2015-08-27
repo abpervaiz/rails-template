@@ -267,6 +267,12 @@ environment 'config.middleware.use Rack::Attack'
 file 'Procfile', IO.read("#{$path}/files/Procfile")
 
 # -----------------------------
+# HEROKU
+# -----------------------------
+file 'bin/heroku-config', render_file("#{$path}/files/heroku-config", app_name: app_name)
+system 'chmod +x bin/heroku-config'
+
+# -----------------------------
 # GUARD
 # -----------------------------
 if !$api_only
