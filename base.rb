@@ -351,7 +351,7 @@ eos
 rails_helper_additions << <<eos if !$api_only
 
   config.before(:each, js: true) do
-    page.driver.browser.url_blacklist = ["http://use.typekit.net"]
+    page.driver.browser.url_blacklist = []
   end
 eos
 
