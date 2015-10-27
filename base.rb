@@ -254,12 +254,14 @@ end
 # -----------------------------
 # JS-RAILS INTERCHANGE
 # -----------------------------
-file 'app/controllers/concerns/interchange.rb', IO.read("#{$path}/files/interchange.rb")
-file 'lib/assets/javascripts/interchange.coffee', IO.read("#{$path}/files/interchange.coffee")
-insert_into_file 'app/controllers/application_controller.rb', "  include Interchange\n",
-                 after: "class ApplicationController < ActionController::Base\n"
-insert_into_file 'app/assets/javascripts/application.js', "\n//= require interchange\n",
-                 before: "\n//= require_tree ./application"
+if !$api_only
+  file 'app/controllers/concerns/interchange.rb', IO.read("#{$path}/files/interchange.rb")
+  file 'lib/assets/javascripts/interchange.coffee', IO.read("#{$path}/files/interchange.coffee")
+  insert_into_file 'app/controllers/application_controller.rb', "  include Interchange\n",
+                   after: "class ApplicationController < ActionController::Base\n"
+  insert_into_file 'app/assets/javascripts/application.js', "\n//= require interchange\n",
+                   before: "\n//= require_tree ./application"
+end
 
 # -----------------------------
 # RACK ATTACK
