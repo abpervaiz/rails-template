@@ -36,8 +36,6 @@ file 'readme.md', render_file("#{$path}/files/readme.md", app_title: app_name.hu
 insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
                  after: "source 'https://rubygems.org'\n"
 
-add_source 'https://rails-assets.org'
-
 gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']turbolinks["'].*$/,''
 gsub_file 'Gemfile', /^\s+gem\s+["']sdoc["'].*$/,''
@@ -56,8 +54,16 @@ gem 'rack-attack'
 gem 'slim-rails' if !$api_only
 gem 'compass-rails' if !$api_only
 
-gem 'rails-assets-normalize.css' if !$api_only
-gem 'rails-assets-lodash' if !$api_only
+rails_assets = <<-eos
+
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-normalize.css'
+  gem 'rails-assets-lodash'
+end
+eos
+
+append_file 'Gemfile', rails_assets if !$api_only
 
 gem_group :development do
   gem 'heroku'
