@@ -49,7 +49,7 @@ gsub_file 'Gemfile', /^gem\s+["']jquery-rails["'].*$/,'' if $api_only
 gsub_file 'app/assets/javascripts/application.js', /^.*require turbolinks.*$/,'' if !$api_only
 
 gem 'pg'
-gem 'passenger'
+gem 'puma'
 gem 'oj'
 gem 'slowpoke'
 gem 'rack-attack'
@@ -262,9 +262,10 @@ initializer 'rack-attack.rb', IO.read("#{$path}/files/rack-attack.rb")
 environment 'config.middleware.use Rack::Attack'
 
 # -----------------------------
-# PASSENGER
+# PUMA
 # -----------------------------
 file 'Procfile', IO.read("#{$path}/files/Procfile")
+file 'config/puma.rb', IO.read("#{$path}/files/puma.rb")
 
 # -----------------------------
 # HEROKU
