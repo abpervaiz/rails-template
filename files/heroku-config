@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # <%= app_name %>
-heroku config:set PUMA_PROCS=3 --app <%= app_name %>
-heroku config:set PUMA_THREADS=6 --app <%= app_name %>
+heroku config:set PUMA_PROCS=2 --app <%= app_name %>
+heroku config:set PUMA_THREADS=8 --app <%= app_name %>
 heroku config:set REQUEST_TIMEOUT=10 --app <%= app_name %>
 heroku config:set DATABASE_TIMEOUT=10 --app <%= app_name %>
 
 # <%= app_name %>-staging
-heroku config:set PUMA_PROCS=3 --app <%= app_name %>-staging
-heroku config:set PUMA_THREADS=6 --app <%= app_name %>-staging
+heroku config:set PUMA_PROCS=2 --app <%= app_name %>-staging
+heroku config:set PUMA_THREADS=8 --app <%= app_name %>-staging
 heroku config:set REQUEST_TIMEOUT=10 --app <%= app_name %>-staging
 heroku config:set DATABASE_TIMEOUT=10 --app <%= app_name %>-staging
