@@ -83,7 +83,6 @@ end
 gem_group :test do
   gem 'capybara' if !$api_only
   gem 'poltergeist' if !$api_only
-  gem 'spring-commands-rspec'
   gem 'webmock'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
@@ -301,38 +300,44 @@ file '.env', IO.read("#{$path}/files/env")
 # -----------------------------
 # MAKE READY
 # -----------------------------
-run "dropdb #{app_name}"
-run "dropdb #{app_name}_test"
-run "dropuser #{app_name}"
-run "createuser -s #{app_name}"
-run "createdb #{app_name}"
-run "createdb #{app_name}_test"
+after_bundle do
+  run "dropdb #{app_name}"
+  run "dropdb #{app_name}_test"
+  run "dropuser #{app_name}"
+  run "createuser -s #{app_name}"
+  run "createdb #{app_name}"
+  run "createdb #{app_name}_test"
 
-run 'bundle install'
-run 'brewdle install'
+  rake 'db:migrate'
+  # remove spring, regenerate binstubs
+  run 'rm -rf ./bin/'
+  gsub_file 'Gemfile', /^\s+gem\s+["']spring["'].*$/,''
+  run 'bundle install'
+  rake 'rails:update:bin'
 
-rake 'db:migrate'
-generate 'rspec:install'
-generate 'slowpoke:install' if !$api_only
+  run 'brewdle install'
 
-run 'bundle exec spring binstub --all'
+  generate 'rspec:install'
+  run 'bundle binstubs rspec-core'
+
+  generate 'slowpoke:install' if !$api_only
 
 # -----------------------------
 # SPEC FILES ADDITIONS
 # -----------------------------
-rails_helper_requires = <<eos
+  rails_helper_requires = <<eos
 
 require 'factory_girl_rails'
 require 'webmock/rspec'
 require 'active_support/testing/time_helpers'
 eos
 
-rails_helper_requires << <<eos if !$api_only
+  rails_helper_requires << <<eos if !$api_only
 require 'capybara'
 require 'capybara/poltergeist'
 eos
 
-rails_helper_additions = <<eos
+  rails_helper_additions = <<eos
   config.include ActiveSupport::Testing::TimeHelpers
 
   config.include FactoryGirl::Syntax::Methods
@@ -348,33 +353,34 @@ rails_helper_additions = <<eos
   end
 eos
 
-rails_helper_additions << <<eos if !$api_only
+  rails_helper_additions << <<eos if !$api_only
 
   config.before(:each, js: true) do
     page.driver.browser.url_blacklist = []
   end
 eos
 
-environment 'config.allow_concurrency = false', env: 'test'
+  environment 'config.allow_concurrency = false', env: 'test'
 
-gsub_file 'spec/rails_helper.rb', /^\W+config\.fixture_path.*\n$/, ''
+  gsub_file 'spec/rails_helper.rb', /^\W+config\.fixture_path.*\n$/, ''
 
-insert_into_file 'spec/rails_helper.rb', rails_helper_requires,
-                 after: "require 'rspec/rails'\n" if !$api_only
+  insert_into_file 'spec/rails_helper.rb', rails_helper_requires,
+                   after: "require 'rspec/rails'\n" if !$api_only
 
-insert_into_file 'spec/rails_helper.rb', rails_helper_additions,
-                 after: "RSpec.configure do |config|\n"
+  insert_into_file 'spec/rails_helper.rb', rails_helper_additions,
+                   after: "RSpec.configure do |config|\n"
 
-insert_into_file 'spec/rails_helper.rb', "  Capybara.javascript_driver = :poltergeist\n",
-                 after: "RSpec.configure do |config|\n" if !$api_only
+  insert_into_file 'spec/rails_helper.rb', "  Capybara.javascript_driver = :poltergeist\n",
+                   after: "RSpec.configure do |config|\n" if !$api_only
 
 
-# -----------------------------
-# GIT
-# -----------------------------
-git :init
-run "git remote add production git@heroku.com:#{app_name}.git"
-run "git remote add staging git@heroku.com:#{app_name}-staging.git"
-append_file '.gitignore', "\n/public/assets/source_maps"
-git add: %Q{ --all }
-git commit: %Q{ -m 'initial commit' }
+  # -----------------------------
+  # GIT
+  # -----------------------------
+  git :init
+  run "git remote add production git@heroku.com:#{app_name}.git"
+  run "git remote add staging git@heroku.com:#{app_name}-staging.git"
+  append_file '.gitignore', "\n/public/assets/source_maps"
+  git add: %Q{ --all }
+  git commit: %Q{ -m 'initial commit' }
+end
