@@ -13,7 +13,7 @@ $class_app_name = app_name.gsub('-', '_').camelize
 $api_only = yes?('is this an api only application?')
 
 # -----------------------------
-# HELPER FUCTIONS
+# HELPER FUNCTIONS
 # -----------------------------
 def render_file(path, variables)
   file = IO.read(path)
