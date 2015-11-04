@@ -4,6 +4,9 @@ require 'ostruct'
 $ruby_version = '2.2.3'
 $path = File.expand_path(File.dirname(__FILE__))
 
+$human_app_name = app_name.humanize
+$class_app_name = app_name.gsub('-', '_').camelize
+
 # -----------------------------
 # QUESTIONS
 # -----------------------------
@@ -28,7 +31,7 @@ environment "config.watchable_dirs['lib'] = [:rb]"
 # DOCUMENTATION
 # -----------------------------
 run 'rm README.rdoc'
-file 'readme.md', render_file("#{$path}/files/readme.md", app_title: app_name.humanize)
+file 'readme.md', render_file("#{$path}/files/readme.md", human_app_name: $human_app_name)
 
 # -----------------------------
 # GEMFILE
@@ -159,15 +162,6 @@ if $api_only
             '  protect_from_forgery with: :null_session'
 end
 
-
-# -----------------------------
-# HELPER
-# -----------------------------
-if !$api_only
-  run 'rm app/helpers/application_helper.rb'
-  file 'app/helpers/application_helper.rb', render_file("#{$path}/files/application_helper.rb", app_name: app_name.camelize)
-end
-
 # -----------------------------
 # VIEWS
 # -----------------------------
@@ -176,7 +170,7 @@ if $api_only
 else
   run 'rm app/views/layouts/application.html.erb'
   file 'app/views/layouts/application.html.slim',
-       render_file("#{$path}/files/application.html.slim", app_title: app_name.humanize)
+       render_file("#{$path}/files/application.html.slim", human_app_name: $human_app_name, class_app_name: $class_app_name)
 end
 
 # -----------------------------
@@ -192,30 +186,9 @@ else
 eos
 
   asset_initializer = <<eos
-Rails.application.config.assets.precompile += #{app_name.camelize}::Application.all_assets
-eos
+#{render_file("#{$path}/files/auto_assets.rb", class_app_name: $class_app_name)}
 
-  application_rb_additions = <<eos
-
-    def top_level_js
-      Dir.glob("\#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\\w|-|~)*)/] + ".js" }
-    end
-
-    def top_level_css
-      Dir.glob("\#{Rails.root}/app/assets/stylesheets/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\\w|-|~)*)/] + ".css" }
-    end
-
-    def all_assets
-      assets = (top_level_js + top_level_css).select { |f| !f.include?('application') }
-    end
-
-    def all_js
-      file_list = Dir.glob("\#{Rails.root}/app/assets/javascripts/*").select { |f| !File.directory?(f) }.map { |f| File.basename(f)[/((\\w|-|~)*)/] }
-      file_list.map { |file| [file, true] }.to_h
-    end
-
-    ALL_JS = all_js
-
+Rails.application.config.assets.precompile += #{$class_app_name}::AutoAssets.all
 eos
 
   run 'mkdir app/assets/stylesheets/application'
@@ -225,7 +198,7 @@ eos
             css_manifest
 
   run 'mkdir app/assets/javascripts/application'
-  file 'app/assets/javascripts/application/app.coffee', render_file("#{$path}/files/app.coffee", app_name: app_name.gsub('-', '_').camelize)
+  file 'app/assets/javascripts/application/app.coffee', render_file("#{$path}/files/app.coffee", class_app_name: $class_app_name)
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require_tree \.$/,
             '//= require_tree ./application'
@@ -239,9 +212,6 @@ eos
 
   insert_into_file 'app/assets/javascripts/application.js', '//= require lodash/lodash',
                    after: "//= require jquery_ujs\n"
-
-  insert_into_file 'config/application.rb', application_rb_additions,
-                   after: "  class Application < Rails::Application\n"
 
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require jquery\n/,

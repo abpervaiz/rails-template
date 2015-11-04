@@ -1,1 +1,1 @@
-window.<%= app_name %> ?= {}
+window.<%= class_app_name %> ?= {}

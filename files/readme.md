@@ -1,4 +1,7 @@
-# <%= app_title %>
+# <%= human_app_name %>
+
+## Style Guide
+https://github.com/bbatsov/rails-style-guide
 
 ## Dependencies
 - Hombrew
@@ -16,3 +19,33 @@
     - running this file will update / add new variables
     - to remove a variable remove it from the file and then run heroku
       config:unset VARIABLE
+
+## Javascripts
+### Manifests
+Javascript manifests for controllers and actions are included
+automatically if you name them correctly.
+
+~~~~
+controller: static_controller.rb
+action: home
+controller manifest name: static.js
+action manifest name: static-home.js
+
+controller: admin/static_controller.rb
+action: home
+controller manifest name: admin~static.js
+action manifest name: admin~static-home.js
+~~~~
+
+### Interchange
+Set variables in a controller with...
+
+~~~~
+interchange(key: 'value')
+~~~~
+
+Access values in javascript with...
+
+~~~~
+Interchange.key
+~~~~
