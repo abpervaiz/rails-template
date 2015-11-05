@@ -8,6 +8,8 @@ html
     = javascript_include_tag *<%= class_app_name %>::AutoAssets.js(params[:controller], params[:action])
     = csrf_meta_tags
 
+    meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+
   body
     = interchange_data
     == yield
