@@ -1,2 +1,15 @@
-@import 'compass'
-@import 'normalize-css/normalize'
+*, *:before, *:after
+  box-sizing: border-box
+  -webkit-font-smoothing: subpixel-antialiased
+
+html, body
+  width: 100%
+  display: flex
+  min-height: 100vh
+  flex-direction: column
+
+  .site
+    max-width: 960px
+    width: 100%
+    margin: 0 auto
+    flex: 1
