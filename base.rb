@@ -197,7 +197,7 @@ Rails.application.config.assets.precompile += #{$class_app_name}::AutoAssets.all
 eos
 
   run 'mkdir app/assets/stylesheets/application'
-  run 'touch app/assets/stylesheets/application/all.sass'
+  file 'app/assets/stylesheets/application/all.sass', IO.read("#{$path}/files/all.sass")
   gsub_file "app/assets/stylesheets/application.css",
             /^.*require_tree \.$/,
             css_manifest
