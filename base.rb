@@ -55,7 +55,7 @@ gem 'oj'
 gem 'slowpoke'
 gem 'rack-attack'
 gem 'slim-rails' if !$api_only
-gem 'compass-rails' if !$api_only
+gem 'autoprefixer-rails' if !$api_only
 
 rails_assets = <<-eos
 
@@ -124,6 +124,11 @@ gsub_file 'config/environments/development.rb', /^.*config\.action_mailer\.raise
 
 gsub_file 'config/environments/test.rb', /^.*config\.action_mailer\.delivery_method = :test$/,
           '  # config.action_mailer.delivery_method = :test'
+
+# -----------------------------
+# AUTOPREFIXER
+# -----------------------------
+file 'config/autoprefixer.yml', IO.read("#{$path}/files/autoprefixer.yml")
 
 # -----------------------------
 # LIVERELOAD
