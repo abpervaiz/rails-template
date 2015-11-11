@@ -71,7 +71,6 @@ append_file 'Gemfile', rails_assets if !$api_only
 gem_group :development do
   gem 'heroku'
   gem 'better_errors'
-  gem 'coffee-rails-source-maps' if !$api_only
   gem 'quiet_assets' if !$api_only
   gem 'guard' if !$api_only
   gem 'rb-fsevent' if !$api_only
