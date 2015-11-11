@@ -41,7 +41,7 @@ insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
 
 gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']turbolinks["'].*$/,''
-gsub_file 'Gemfile', /^\s+gem\s+["']sdoc["'].*$/,''
+gsub_file 'Gemfile', /^gem\s+["']sdoc["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']sass-rails["'].*$/,'' if $api_only
 gsub_file 'Gemfile', /^gem\s+["']uglifier["'].*$/,'' if $api_only
 gsub_file 'Gemfile', /^gem\s+["']coffee-rails["'].*$/,'' if $api_only
