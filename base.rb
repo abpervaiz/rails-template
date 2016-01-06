@@ -59,7 +59,6 @@ gem 'autoprefixer-rails' if !$api_only
 
 rails_assets = <<-eos
 
-
 source 'https://rails-assets.org' do
   gem 'rails-assets-normalize.css'
   gem 'rails-assets-lodash'
