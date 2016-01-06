@@ -54,7 +54,7 @@ gem 'puma'
 gem 'oj'
 gem 'slowpoke'
 gem 'rack-attack'
-gem 'slim-rails' if !$api_only
+gem 'haml' if !$api_only
 gem 'autoprefixer-rails' if !$api_only
 
 rails_assets = <<-eos
@@ -171,8 +171,8 @@ if $api_only
   run 'rm app/views/layouts/application.html.erb'
 else
   run 'rm app/views/layouts/application.html.erb'
-  file 'app/views/layouts/application.html.slim',
-       render_file("#{$path}/files/application.html.slim", human_app_name: $human_app_name, class_app_name: $class_app_name)
+  file 'app/views/layouts/application.html.haml',
+       render_file("#{$path}/files/application.html.haml", human_app_name: $human_app_name, class_app_name: $class_app_name)
 end
 
 # -----------------------------
@@ -205,10 +205,6 @@ eos
             /^\/\/= require_tree \.$/,
             '//= require_tree ./application'
 
-  run 'touch app/assets/stylesheets/debug.css'
-  prepend_file 'app/assets/stylesheets/debug.css',
-               '/* = require pesticide */'
-
   prepend_file 'config/initializers/assets.rb',
                asset_initializer
 
@@ -218,8 +214,6 @@ eos
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require jquery\n/,
             "//= require jquery2\n"
-
-  file 'vendor/assets/stylesheets/pesticide.scss', IO.read("#{$path}/files/pesticide.scss")
 end
 
 # -----------------------------
