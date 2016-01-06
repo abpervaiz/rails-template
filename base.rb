@@ -143,14 +143,10 @@ file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name:
 # -----------------------------
 # SYSTEM SETUP
 # -----------------------------
-run 'rm bin/setup'
-file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
-run 'chmod +x bin/setup'
-
 packages = []
 packages << 'phantomjs' if !$api_only
 
-system 'brew tap Homebrew/brewdler'
+system 'brew tap homebrew/bundle'
 file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
 file 'bin/deploy', IO.read("#{$path}/files/deploy")
 file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
@@ -281,7 +277,11 @@ after_bundle do
   run 'bundle install'
   rake 'rails:update:bin'
 
-  run 'brewdle install'
+  run 'rm bin/setup'
+  file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
+  run 'chmod +x bin/setup'
+
+  run 'brew bundle'
 
   generate 'rspec:install'
   run 'bundle binstubs rspec-core'
