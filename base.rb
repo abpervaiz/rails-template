@@ -59,6 +59,7 @@ gem 'haml' if !$api_only
 gem 'autoprefixer-rails' if !$api_only
 gem 'lograge'
 gem 'contracts'
+gem 'wisper'
 
 rails_assets = <<-eos
 
