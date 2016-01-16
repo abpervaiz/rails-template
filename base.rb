@@ -196,7 +196,7 @@ eos
             css_manifest
 
   run 'mkdir app/assets/javascripts/application'
-  file 'app/assets/javascripts/application/app.coffee', render_file("#{$path}/files/app.coffee", class_app_name: $class_app_name)
+  file 'app/assets/javascripts/application/entry.coffee', render_file("#{$path}/files/entry.coffee", class_app_name: $class_app_name)
   gsub_file 'app/assets/javascripts/application.js',
             /^\/\/= require_tree \.$/,
             '//= require_tree ./application'
