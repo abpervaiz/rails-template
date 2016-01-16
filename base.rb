@@ -57,6 +57,7 @@ gem 'rack-attack'
 gem 'active_model_serializers'
 gem 'haml' if !$api_only
 gem 'autoprefixer-rails' if !$api_only
+gem 'lograge'
 
 rails_assets = <<-eos
 
@@ -121,6 +122,11 @@ gsub_file 'config/environments/development.rb', /^.*config\.action_mailer\.raise
 
 gsub_file 'config/environments/test.rb', /^.*config\.action_mailer\.delivery_method = :test$/,
           '  # config.action_mailer.delivery_method = :test'
+
+# -----------------------------
+# LOGRAGE
+# -----------------------------
+initializer 'lograge.rb', render_file("#{$path}/files/lograge.rb", class_app_name: $class_app_name)
 
 # -----------------------------
 # AUTOPREFIXER
