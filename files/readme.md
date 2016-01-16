@@ -1,7 +1,8 @@
 # <%= human_app_name %>
 
-## Style Guide
-https://github.com/bbatsov/rails-style-guide
+## Style Guides
+- https://github.com/bbatsov/rails-style-guide
+- http://www.betterspecs.org
 
 ## Dependencies
 - Hombrew
