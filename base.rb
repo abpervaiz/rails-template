@@ -191,11 +191,11 @@ else
  *= require application/all
 eos
 
-  asset_initializer = <<eos
-#{render_file("#{$path}/files/auto_assets.rb", class_app_name: $class_app_name)}
+  asset_initializer = <<~eos
+    #{render_file("#{$path}/files/auto_assets.rb", class_app_name: $class_app_name)}
 
-Rails.application.config.assets.precompile += #{$class_app_name}::AutoAssets.all
-eos
+    Rails.application.config.assets.precompile += #{$class_app_name}::AutoAssets.all
+  eos
 
   run 'mkdir app/assets/stylesheets/application'
   file 'app/assets/stylesheets/application/all.sass', IO.read("#{$path}/files/all.sass")
@@ -299,17 +299,17 @@ after_bundle do
 # -----------------------------
 # SPEC FILES ADDITIONS
 # -----------------------------
-  rails_helper_requires = <<eos
+  rails_helper_requires = <<~eos
 
-require 'factory_girl_rails'
-require 'webmock/rspec'
-require 'active_support/testing/time_helpers'
-eos
+    require 'factory_girl_rails'
+    require 'webmock/rspec'
+    require 'active_support/testing/time_helpers'
+  eos
 
-  rails_helper_requires << <<eos if !$api_only
-require 'capybara'
-require 'capybara/poltergeist'
-eos
+  rails_helper_requires << <<~eos if !$api_only
+    require 'capybara'
+    require 'capybara/poltergeist'
+  eos
 
   rails_helper_additions = <<eos
   config.include ActiveSupport::Testing::TimeHelpers
