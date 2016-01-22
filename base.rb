@@ -88,6 +88,7 @@ end
 gem_group :test do
   gem 'capybara' if !$api_only
   gem 'poltergeist' if !$api_only
+  gem 'spring-commands-rspec'
   gem 'webmock'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
@@ -279,11 +280,7 @@ after_bundle do
   run "createdb #{app_name}_test"
 
   rake 'db:migrate'
-  # remove spring, regenerate binstubs
-  run 'rm -rf ./bin/'
-  gsub_file 'Gemfile', /^\s+gem\s+["']spring["'].*$/,''
-  run 'bundle install'
-  rake 'rails:update:bin'
+  run 'bundle exec spring binstub --all'
 
   run 'rm bin/setup'
   file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
