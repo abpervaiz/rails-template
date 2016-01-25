@@ -333,4 +333,11 @@ eos
   append_file '.gitignore', "\n/public/assets/source_maps"
   git add: %Q{ --all }
   git commit: %Q{ -m 'initial commit' }
+
+  puts '------------------------------------------'
+  puts '------------------------------------------'
+  puts 'all done!'
+  puts 'you should really go clean up / organize the gemfile, spec_helper, & rails_helper now'
+  puts '------------------------------------------'
+  puts '------------------------------------------'
 end
