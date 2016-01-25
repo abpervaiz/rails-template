@@ -298,37 +298,15 @@ after_bundle do
 # -----------------------------
   rails_helper_requires = <<~eos
 
-    require 'factory_girl_rails'
     require 'webmock/rspec'
     require 'active_support/testing/time_helpers'
-  eos
 
-  rails_helper_requires << <<~eos if !$api_only
-    require 'capybara'
-    require 'capybara/poltergeist'
+    # load all files in spec/support
+    Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
   eos
 
   rails_helper_additions = <<eos
   config.include ActiveSupport::Testing::TimeHelpers
-
-  config.include FactoryGirl::Syntax::Methods
-
-  config.before(:all) do
-    DatabaseCleaner.strategy = :deletion
-    DatabaseCleaner.start
-    FactoryGirl.lint
-  end
-
-  config.after(:all) do
-    DatabaseCleaner.clean
-  end
-eos
-
-  rails_helper_additions << <<eos if !$api_only
-
-  config.before(:each, js: true) do
-    page.driver.browser.url_blacklist = []
-  end
 eos
 
   environment 'config.allow_concurrency = false', env: 'test'
@@ -336,14 +314,17 @@ eos
   gsub_file 'spec/rails_helper.rb', /^\W+config\.fixture_path.*\n$/, ''
 
   insert_into_file 'spec/rails_helper.rb', rails_helper_requires,
-                   after: "require 'rspec/rails'\n" if !$api_only
+                   after: "require 'rspec/rails'\n"
 
   insert_into_file 'spec/rails_helper.rb', rails_helper_additions,
                    after: "RSpec.configure do |config|\n"
 
-  insert_into_file 'spec/rails_helper.rb', "  Capybara.javascript_driver = :poltergeist\n",
-                   after: "RSpec.configure do |config|\n" if !$api_only
+  file 'spec/support/database_cleaner.rb', IO.read("#{$path}/files/database_cleaner.rb")
+  file 'spec/support/factory_girl.rb', IO.read("#{$path}/files/factory_girl.rb")
 
+  if !$api_only
+    file 'spec/support/capybara.rb', IO.read("#{$path}/files/capybara.rb")
+  end
 
   # -----------------------------
   # GIT
