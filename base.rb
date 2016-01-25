@@ -280,7 +280,6 @@ after_bundle do
   run "createdb #{app_name}_test"
 
   rake 'db:migrate'
-  run 'bundle exec spring binstub --all'
 
   run 'rm bin/setup'
   file 'bin/setup', render_file("#{$path}/files/setup", app_name: app_name)
@@ -289,7 +288,6 @@ after_bundle do
   run 'brew bundle'
 
   generate 'rspec:install'
-  run 'bundle binstubs rspec-core'
 
   generate 'slowpoke:install' if !$api_only
 
