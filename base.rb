@@ -269,6 +269,11 @@ run 'rm -rf test'
 file '.env', IO.read("#{$path}/files/env")
 
 # -----------------------------
+# SCHEMA.RB -> STRUCTURE.SQL
+# -----------------------------
+environment "config.active_record.schema_format = :sql"
+
+# -----------------------------
 # MAKE READY
 # -----------------------------
 after_bundle do
