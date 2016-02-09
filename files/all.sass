@@ -11,6 +11,17 @@ html, body
 
   .site
     margin: 0 auto
-    display: flex
-    flex: 1
+    flex-grow: 1
     width: 100%
+
+    .row
+      @media (min-width: 480px)
+        display: flex
+        flex-wrap: nowrap
+
+    .col
+      @media (min-width: 480px)
+        flex-grow: 1
+
+      @media (max-width: 480px)
+        width: 100% !important
