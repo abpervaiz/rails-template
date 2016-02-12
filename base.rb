@@ -56,7 +56,7 @@ gem 'slowpoke'
 gem 'rack-attack'
 gem 'dalli'
 gem 'active_model_serializers'
-gem 'haml' if !$api_only
+gem 'hamlit' if !$api_only
 gem 'autoprefixer-rails' if !$api_only
 gem 'lograge'
 gem 'contracts'
