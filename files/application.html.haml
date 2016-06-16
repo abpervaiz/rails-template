@@ -12,10 +12,12 @@
 
   %body
     = interchange_data
-
-    %header
-
     .site
-      = yield
+      %header
+        .content
 
-    %footer
+      .content
+        = yield
+
+      %footer
+        .content
