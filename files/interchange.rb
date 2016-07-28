@@ -17,7 +17,7 @@ module Interchange
   include ERB::Util
 
   included do
-    before_filter :init_interchange
+    before_action :init_interchange
 
     helper_method :interchange_data
   end

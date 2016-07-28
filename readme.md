@@ -3,6 +3,12 @@
 ## Description
 My Rails Template.
 
+Run with...
+
+~~~~
+rails new -m path/to/base.rb --skip-action-mailer --skip-action-cable --skip-turbolinks --skip-test --skip-spring --database=postgresql appname
+~~~~
+
 ## License
 The MIT License (MIT)
 

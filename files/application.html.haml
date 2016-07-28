@@ -1,9 +1,9 @@
 !!! 5
 %html
   %head
-    %title Testapp
+    %title <%= human_app_name %>
     = stylesheet_link_tag    "application", media: "all"
-    = javascript_include_tag *Testapp::AutoAssets.js(params[:controller], params[:action])
+    = javascript_include_tag *<%= class_app_name  %>::AutoAssets.js(params[:controller], params[:action])
     = csrf_meta_tags
 
     %meta{ name: 'viewport',

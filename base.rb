@@ -8,11 +8,6 @@ $human_app_name = app_name.humanize
 $class_app_name = app_name.gsub('-', '_').camelize
 
 # -----------------------------
-# QUESTIONS
-# -----------------------------
-$api_only = yes?('is this an api only application?')
-
-# -----------------------------
 # HELPER FUNCTIONS
 # -----------------------------
 def render_file(path, variables)
@@ -30,7 +25,7 @@ environment "config.watchable_dirs['lib'] = [:rb]"
 # -----------------------------
 # DOCUMENTATION
 # -----------------------------
-run 'rm README.rdoc'
+run 'rm readme.md'
 file 'readme.md', render_file("#{$path}/files/readme.md", human_app_name: $human_app_name)
 
 # -----------------------------
@@ -39,25 +34,19 @@ file 'readme.md', render_file("#{$path}/files/readme.md", human_app_name: $human
 insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
                  after: "source 'https://rubygems.org'\n"
 
-gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/,''
-gsub_file 'Gemfile', /^gem\s+["']turbolinks["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']sdoc["'].*$/,''
-gsub_file 'Gemfile', /^gem\s+["']sass-rails["'].*$/,'' if $api_only
-gsub_file 'Gemfile', /^gem\s+["']uglifier["'].*$/,'' if $api_only
-gsub_file 'Gemfile', /^gem\s+["']coffee-rails["'].*$/,'' if $api_only
-gsub_file 'Gemfile', /^gem\s+["']jquery-rails["'].*$/,'' if $api_only
+gsub_file 'Gemfile', /^gem\s+["']web-console["'].*$/,''
 
-gsub_file 'app/assets/javascripts/application.js', /^.*require turbolinks.*$/,'' if !$api_only
+gsub_file 'Gemfile', /^gem\s+["']jquery-rails["'].*$/,''
+gem 'jquery-rails', git: 'git://github.com/rails/jquery-rails.git'
 
-gem 'pg'
-gem 'puma'
 gem 'oj'
 gem 'slowpoke'
 gem 'rack-attack'
 gem 'dalli'
 gem 'active_model_serializers'
-gem 'hamlit' if !$api_only
-gem 'autoprefixer-rails' if !$api_only
+gem 'hamlit'
+gem 'autoprefixer-rails'
 gem 'lograge'
 gem 'contracts'
 gem 'wisper'
@@ -70,26 +59,24 @@ source 'https://rails-assets.org' do
 end
 eos
 
-append_file 'Gemfile', rails_assets if !$api_only
+append_file 'Gemfile', rails_assets
 
 gem_group :development do
   gem 'heroku'
   gem 'better_errors'
-  gem 'quiet_assets' if !$api_only
-  gem 'guard' if !$api_only
-  gem 'rb-fsevent' if !$api_only
-  gem 'guard-livereload', require: false if !$api_only
-  gem 'rack-livereload' if !$api_only
-  gem 'rack-mini-profiler' if !$api_only
-  gem 'flamegraph' if !$api_only
-  gem 'stackprof' if !$api_only
-  gem 'memory_profiler' if !$api_only
+  gem 'guard'
+  gem 'rb-fsevent'
+  gem 'guard-livereload', require: false
+  gem 'rack-livereload'
+  gem 'rack-mini-profiler'
+  gem 'flamegraph'
+  gem 'stackprof'
+  gem 'memory_profiler'
 end
 
 gem_group :test do
-  gem 'capybara' if !$api_only
-  gem 'poltergeist' if !$api_only
-  gem 'spring-commands-rspec'
+  gem 'capybara'
+  gem 'poltergeist'
   gem 'webmock'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
@@ -109,25 +96,6 @@ gem_group :production, :staging do
 end
 
 # -----------------------------
-# APPLICATION.RB
-# -----------------------------
-# Pick pieces from https://github.com/rails/rails/blob/master/railties/lib/rails/all.rb
-gsub_file 'config/application.rb', /^.*require 'rails\/all'$/,
-          parts = <<eos
-require 'active_record/railtie'
-require 'action_controller/railtie'
-require 'action_view/railtie'
-require 'rails/test_unit/railtie'
-require 'sprockets/railtie'
-eos
-
-gsub_file 'config/environments/development.rb', /^.*config\.action_mailer\.raise_delivery_errors = false$/,
-          '  # config.action_mailer.raise_delivery_errors = false'
-
-gsub_file 'config/environments/test.rb', /^.*config\.action_mailer\.delivery_method = :test$/,
-          '  # config.action_mailer.delivery_method = :test'
-
-# -----------------------------
 # LOGRAGE
 # -----------------------------
 initializer 'lograge.rb', render_file("#{$path}/files/lograge.rb", class_app_name: $class_app_name)
@@ -140,9 +108,7 @@ file 'config/autoprefixer.yml', IO.read("#{$path}/files/autoprefixer.yml")
 # -----------------------------
 # LIVERELOAD
 # -----------------------------
-if !$api_only
-  environment 'config.middleware.insert_before Rack::Lock, Rack::LiveReload', env: 'development'
-end
+environment 'config.middleware.insert_before Rack::Runtime, Rack::LiveReload', env: 'development'
 
 # -----------------------------
 # DATABASE
@@ -150,11 +116,16 @@ end
 run 'rm config/database.yml'
 file 'config/database.yml', render_file("#{$path}/files/database.yml", app_name: app_name)
 
+environment 'config.active_record.primary_key = :uuid'
+file "db/migrate/#{DateTime.now.strftime("%Y%m%d%H%M%S")}_enable_uuid.rb", IO.read("#{$path}/files/enable_uuid.rb")
+
+environment 'config.active_record.schema_format = :sql'
+
 # -----------------------------
 # SYSTEM SETUP
 # -----------------------------
 packages = []
-packages << 'phantomjs' if !$api_only
+packages << 'phantomjs'
 
 system 'brew tap homebrew/bundle'
 file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
@@ -163,76 +134,48 @@ file 'lib/tasks/dev.rake', IO.read("#{$path}/files/dev.rake")
 run 'chmod +x bin/deploy'
 
 # -----------------------------
-# APIS
-# -----------------------------
-if $api_only
-  gsub_file 'app/controllers/application_controller.rb', /^.*protect_from_forgery with: :exception$/,
-            '  protect_from_forgery with: :null_session'
-end
-
-# -----------------------------
 # VIEWS
 # -----------------------------
-if $api_only
-  run 'rm app/views/layouts/application.html.erb'
-else
-  run 'rm app/views/layouts/application.html.erb'
-  file 'app/views/layouts/application.html.haml',
-       render_file("#{$path}/files/application.html.haml", human_app_name: $human_app_name, class_app_name: $class_app_name)
-end
+run 'rm app/views/layouts/application.html.erb'
+file 'app/views/layouts/application.html.haml',
+     render_file("#{$path}/files/application.html.haml", human_app_name: $human_app_name, class_app_name: $class_app_name)
 
 # -----------------------------
 # ASSETS
 # -----------------------------
-if $api_only
-  run 'rm -rf app/assets'
-  run 'rm -rf vendor/assets'
-else
-  css_manifest = <<eos
+css_manifest = <<eos
  *= require normalize.css/normalize
  *= require application/all
 eos
 
-  asset_initializer = <<~eos
-    #{render_file("#{$path}/files/auto_assets.rb", class_app_name: $class_app_name)}
+asset_initializer = <<~eos
+  #{render_file("#{$path}/files/auto_assets.rb", class_app_name: $class_app_name)}
 
-    Rails.application.config.assets.precompile += #{$class_app_name}::AutoAssets.all
-  eos
+  Rails.application.config.assets.precompile += #{$class_app_name}::AutoAssets.all
+eos
 
-  run 'mkdir app/assets/stylesheets/application'
-  file 'app/assets/stylesheets/application/all.sass', IO.read("#{$path}/files/all.sass")
-  gsub_file "app/assets/stylesheets/application.css",
-            /^.*require_tree \.$/,
-            css_manifest
+prepend_file 'config/initializers/assets.rb', asset_initializer
 
-  run 'mkdir app/assets/javascripts/application'
-  file 'app/assets/javascripts/application/entry.coffee', render_file("#{$path}/files/entry.coffee", class_app_name: $class_app_name)
-  gsub_file 'app/assets/javascripts/application.js',
-            /^\/\/= require_tree \.$/,
-            '//= require_tree ./application'
+run 'mkdir app/assets/stylesheets/application'
+file 'app/assets/stylesheets/application/all.sass', IO.read("#{$path}/files/all.sass")
+gsub_file "app/assets/stylesheets/application.css",
+          /^.*require_tree \.$/,
+          css_manifest
 
-  prepend_file 'config/initializers/assets.rb',
-               asset_initializer
-
-  insert_into_file 'app/assets/javascripts/application.js', '//= require lodash/lodash',
-                   after: "//= require jquery_ujs\n"
-
-  gsub_file 'app/assets/javascripts/application.js',
-            /^\/\/= require jquery\n/,
-            "//= require jquery2\n"
-end
+run 'mkdir app/assets/javascripts/application'
+file 'app/assets/javascripts/application/entry.coffee', render_file("#{$path}/files/entry.coffee", class_app_name: $class_app_name)
+run 'rm app/assets/javascripts/application.js'
+file 'app/assets/javascripts/application.js', IO.read("#{$path}/files/application.js")
 
 # -----------------------------
 # JS-RAILS INTERCHANGE
 # -----------------------------
-if !$api_only
-  file 'app/controllers/concerns/interchange.rb', IO.read("#{$path}/files/interchange.rb")
-  file 'lib/assets/javascripts/interchange.coffee', IO.read("#{$path}/files/interchange.coffee")
-  insert_into_file 'app/controllers/application_controller.rb', "  include Interchange\n",
-                   after: "class ApplicationController < ActionController::Base\n"
-  insert_into_file 'app/assets/javascripts/application.js', "\n//= require interchange\n",
-                   before: "\n//= require_tree ./application"
-end
+file 'app/controllers/concerns/interchange.rb', IO.read("#{$path}/files/interchange.rb")
+file 'lib/assets/javascripts/interchange.coffee', IO.read("#{$path}/files/interchange.coffee")
+insert_into_file 'app/controllers/application_controller.rb', "  include Interchange\n",
+                 after: "class ApplicationController < ActionController::Base\n"
+insert_into_file 'app/assets/javascripts/application.js', "\n//= require interchange\n",
+                 before: "\n//= require_tree ./application"
 
 # -----------------------------
 # RACK ATTACK
@@ -244,6 +187,8 @@ environment 'config.middleware.use Rack::Attack'
 # PUMA
 # -----------------------------
 file 'Procfile', IO.read("#{$path}/files/Procfile")
+
+system 'rm config/puma.rb'
 file 'config/puma.rb', IO.read("#{$path}/files/puma.rb")
 
 # -----------------------------
@@ -255,24 +200,12 @@ system 'chmod +x bin/heroku-config'
 # -----------------------------
 # GUARD
 # -----------------------------
-if !$api_only
-  file 'Guardfile', IO.read("#{$path}/files/Guardfile")
-end
-
-# -----------------------------
-# RSPEC
-# -----------------------------
-run 'rm -rf test'
+file 'Guardfile', IO.read("#{$path}/files/Guardfile")
 
 # -----------------------------
 # DOTENV
 # -----------------------------
 file '.env', IO.read("#{$path}/files/env")
-
-# -----------------------------
-# SCHEMA.RB -> STRUCTURE.SQL
-# -----------------------------
-environment "config.active_record.schema_format = :sql"
 
 # -----------------------------
 # MAKE READY
@@ -295,7 +228,7 @@ after_bundle do
 
   generate 'rspec:install'
 
-  generate 'slowpoke:install' if !$api_only
+  generate 'slowpoke:install'
 
 # -----------------------------
 # SPEC FILES ADDITIONS
@@ -313,8 +246,6 @@ after_bundle do
   config.include ActiveSupport::Testing::TimeHelpers
 eos
 
-  environment 'config.allow_concurrency = false', env: 'test'
-
   gsub_file 'spec/rails_helper.rb', /^\W+config\.fixture_path.*\n$/, ''
 
   insert_into_file 'spec/rails_helper.rb', rails_helper_requires,
@@ -326,9 +257,7 @@ eos
   file 'spec/support/database_cleaner.rb', IO.read("#{$path}/files/database_cleaner.rb")
   file 'spec/support/factory_girl.rb', IO.read("#{$path}/files/factory_girl.rb")
 
-  if !$api_only
-    file 'spec/support/capybara.rb', IO.read("#{$path}/files/capybara.rb")
-  end
+  file 'spec/support/capybara.rb', IO.read("#{$path}/files/capybara.rb")
 
   # -----------------------------
   # GIT
@@ -336,9 +265,8 @@ eos
   git :init
   run "git remote add production git@heroku.com:#{app_name}.git"
   run "git remote add staging git@heroku.com:#{app_name}-staging.git"
-  append_file '.gitignore', "\n/public/assets/source_maps"
-  git add: %Q{ --all }
-  git commit: %Q{ -m 'initial commit' }
+  git add: %Q{--all}
+  git commit: %Q{-m 'initial commit'}
 
   puts '------------------------------------------'
   puts '------------------------------------------'
