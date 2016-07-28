@@ -1,7 +1,7 @@
 require 'erb'
 require 'ostruct'
 
-$ruby_version = '2.3.0'
+$ruby_version = '2.3.1'
 $path = File.expand_path(File.dirname(__FILE__))
 
 $human_app_name = app_name.humanize
