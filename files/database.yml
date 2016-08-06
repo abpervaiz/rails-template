@@ -3,7 +3,7 @@ development: &default
   host: localhost
   database: <%= app_name %>
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: <%= app_name %>
   password:
 
