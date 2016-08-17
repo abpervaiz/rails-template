@@ -1,80 +1,31 @@
-class Rack::Attack
+# NB: `req` is a Rack::Request object (basically an env hash with friendly accessor methods)
 
-  ### Configure Cache ###
+# Throttle 10 requests/ip/second
+# NB: return value of block is key name for counter
+#     falsy values bypass throttling
+Rack::Attack.throttle("req/ip", :limit => 10, :period => 1) { |req| req.ip }
 
-  # If you don't want to use Rails.cache (Rack::Attack's default), then
-  # configure it here.
-  #
-  # Note: The store is only used for throttling (not blacklisting and
-  # whitelisting). It must implement .increment and .write like
-  # ActiveSupport::Cache::Store
+# Throttle attempts to a particular path. 2 POSTs to /login per second per IP
+Rack::Attack.throttle "logins/ip", :limit => 2, :period => 1 do |req|
+  req.post? && req.path == "/login" && req.ip
+end
 
-  # Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+# Throttle login attempts per email, 10/minute/email
+Rack::Attack.throttle "logins/email", :limit => 2, :period => 60 do |req|
+  req.post? && req.path == "/login" && req.params['email']
+end
 
-  ### Throttle Spammy Clients ###
-  whitelist('allow from localhost') do |req|
-    '127.0.0.1' == req.ip
-  end
+# blocklist bad IPs from accessing admin pages
+Rack::Attack.blocklist "bad_ips from logging in" do |req|
+  req.path =~ /^\/admin/ && bad_ips.include?(req.ip)
+end
 
-  # If any single client IP is making tons of requests, then they're
-  # probably malicious or a poorly-configured scraper. Either way, they
-  # don't deserve to hog all of the app server's CPU. Cut them off!
-  #
-  # Note: If you're serving assets through rack, those requests may be
-  # counted by rack-attack and this throttle may be activated too
-  # quickly. If so, enable the condition to exclude them from tracking.
+# safelist a User-Agent
+Rack::Attack.safelist 'internal user agent' do |req|
+  req.user_agent == 'InternalUserAgent'
+end
 
-  # Throttle all requests by IP (60rpm)
-  #
-  # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-  throttle('req/ip', :limit => 300, :period => 5.minutes) do |req|
-    req.ip unless req.path.starts_with?('/assets')
-  end
-
-  ### Prevent Brute-Force Login Attacks ###
-
-  # The most common brute-force login attack is a brute-force password
-  # attack where an attacker simply tries a large number of emails and
-  # passwords to see if any credentials match.
-  #
-  # Another common method of attack is to use a swarm of computers with
-  # different IPs to try brute-forcing a password for a specific account.
-
-  # Throttle POST requests to /login by IP address
-  #
-  # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.ip}"
-  throttle('logins/ip', :limit => 5, :period => 20.seconds) do |req|
-    if req.path == '/login' && req.post?
-      req.ip
-    end
-  end
-
-  # Throttle POST requests to /login by email param
-  #
-  # Key: "rack::attack:#{Time.now.to_i/:period}:logins/email:#{req.email}"
-  #
-  # Note: This creates a problem where a malicious user could intentionally
-  # throttle logins for another user and force their login requests to be
-  # denied, but that's not very common and shouldn't happen to you. (Knock
-  # on wood!)
-  throttle("logins/email", :limit => 5, :period => 20.seconds) do |req|
-    if req.path == '/login' && req.post?
-      # return the email if present, nil otherwise
-      req.params['email'].presence
-    end
-  end
-
-  ### Custom Throttle Response ###
-
-  # By default, Rack::Attack returns an HTTP 429 for throttled responses,
-  # which is just fine.
-  #
-  # If you want to return 503 so that the attacker might be fooled into
-  # believing that they've successfully broken your app (or you just want to
-  # customize the response), then uncomment these lines.
-  # self.throttled_response = lambda do |env|
-  #  [ 503,  # status
-  #    {},   # headers
-  #    ['']] # body
-  # end
+# safelist localhost
+Rack::Attack.safelist 'internal user agent' do |req|
+  req.ip == '127.0.0.1'
 end
