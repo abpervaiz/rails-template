@@ -57,7 +57,6 @@ source 'https://rails-assets.org' do
   gem 'rails-assets-normalize.css'
   gem 'rails-assets-lodash'
   gem 'rails-assets-react'
-  gem 'rails-assets-lodash'
   gem 'rails-assets-velocity'
   gem 'rails-assets-pubsub-js'
   gem 'rails-assets-rsvp'
