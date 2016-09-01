@@ -106,6 +106,12 @@ end
 initializer 'lograge.rb', render_file("#{$path}/files/lograge.rb", class_app_name: $class_app_name)
 
 # -----------------------------
+# LOGGING
+# -----------------------------
+initializer 'active_model_serializers.rb', IO.read("#{$path}/files/active_model_serializers.rb")
+environment 'config.active_record.logger = nil', env: 'production'
+
+# -----------------------------
 # AUTOPREFIXER
 # -----------------------------
 file 'config/autoprefixer.yml', IO.read("#{$path}/files/autoprefixer.yml")
