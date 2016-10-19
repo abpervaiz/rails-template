@@ -1,3 +1,1 @@
-if Rails.env.production?
-  ActiveModelSerializers.logger = nil
-end
+ActiveModelSerializers.logger = nil
