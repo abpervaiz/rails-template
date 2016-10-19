@@ -35,7 +35,6 @@ insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
                  after: "source 'https://rubygems.org'\n"
 
 gsub_file 'Gemfile', /^gem\s+["']sdoc["'].*$/,''
-gsub_file 'Gemfile', /^gem\s+["']web-console["'].*$/,''
 
 gem 'oj'
 gem 'slowpoke'
