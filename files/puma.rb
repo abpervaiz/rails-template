@@ -12,4 +12,8 @@ on_worker_boot do
   ActiveRecord::Base.establish_connection
 end
 
+before_fork do
+  ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
+end
+
 plugin :tmp_restart
