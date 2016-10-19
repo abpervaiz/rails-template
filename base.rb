@@ -37,9 +37,6 @@ insert_into_file 'Gemfile', "\nruby '#{$ruby_version}'",
 gsub_file 'Gemfile', /^gem\s+["']sdoc["'].*$/,''
 gsub_file 'Gemfile', /^gem\s+["']web-console["'].*$/,''
 
-gsub_file 'Gemfile', /^gem\s+["']jquery-rails["'].*$/,''
-gem 'jquery-rails', git: 'git://github.com/rails/jquery-rails.git'
-
 gem 'oj'
 gem 'slowpoke'
 gem 'rack-attack'
