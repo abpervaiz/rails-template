@@ -13,6 +13,8 @@
 
 ## Development
 - Run rake dev:init to wipe everything and start fresh
+- Make sure that all tests pass and there are no rubocop warnings before
+  committing by running `be rubocop && be rspec`
 
 ## Deployment
 - run bin/deploy app-name branch-name
