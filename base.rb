@@ -63,6 +63,7 @@ eos
 append_file 'Gemfile', rails_assets
 
 gem_group :development do
+  gem 'rubocop', require: false
   gem 'heroku'
   gem 'better_errors'
   gem 'guard'
@@ -95,6 +96,11 @@ end
 gem_group :production, :staging do
   gem 'rails_12factor'
 end
+
+# -----------------------------
+# RUBOCP
+# -----------------------------
+file '.rubocop.yml', IO.read("#{$path}/files/rubocop.yml")
 
 # -----------------------------
 # LOGRAGE
@@ -187,7 +193,7 @@ insert_into_file 'app/assets/javascripts/application.js', "\n//= require interch
 # -----------------------------
 # RACK ATTACK
 # -----------------------------
-initializer 'rack-attack.rb', IO.read("#{$path}/files/rack-attack.rb")
+initializer 'rack_attack.rb', IO.read("#{$path}/files/rack_attack.rb")
 environment 'config.middleware.use Rack::Attack'
 
 # -----------------------------
@@ -278,7 +284,9 @@ eos
   puts '------------------------------------------'
   puts '------------------------------------------'
   puts 'all done!'
-  puts 'you should really go clean up / organize the gemfile, spec_helper, & rails_helper now'
+  puts 'you should really:clean up / organize the gemfile, spec_helper, & rails_helper now'
+  puts '1. clean up / organize the gemfile, spec_helper, & rails_helper'
+  puts '2. run `be rubocop` and fix all the issues'
   puts '------------------------------------------'
   puts '------------------------------------------'
 end

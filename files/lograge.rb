@@ -2,9 +2,9 @@
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
     params = event.payload[:params].reject do |k|
-      ['controller', 'action'].include? k
+      %w(controller action).include? k
     end
 
-    { "params" => params }
+    { 'params' => params }
   end
 end

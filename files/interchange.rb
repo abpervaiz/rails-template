@@ -14,7 +14,7 @@ module Interchange
   class KeyMustBeSymbol < StandardError; end
 
   extend ActiveSupport::Concern
-  include ERB::Util
+  include ActionView::Helpers::TagHelper
 
   included do
     before_action :init_interchange
@@ -25,7 +25,7 @@ module Interchange
   def interchange(data)
     data.keys.each do |key|
       raise KeyMustBeSymbol, key if key.class != Symbol
-      raise KeyAlreadyExists, key if @interchange_data.has_key?(key)
+      raise KeyAlreadyExists, key if @interchange_data.key?(key)
     end
 
     @interchange_data = @interchange_data.merge(data)
@@ -34,7 +34,13 @@ module Interchange
   def interchange_data
     data = Oj.dump(@interchange_data, mode: :compat)
 
-    "<div id=\"interchange\" data-data=\"#{h data}\" style=\"display: none\"></div>".html_safe
+    content_tag(
+      :div,
+      '',
+      id: 'interchange',
+      style: 'display: none',
+      'data-data' => data
+    )
   end
 
   def init_interchange

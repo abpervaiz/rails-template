@@ -5,5 +5,7 @@ guard 'livereload' do
   watch(%r{app/.+\.rb})
   watch(%r{public/.+\.(css|js|html)})
   watch(%r{config/locales/.+\.yml})
-  watch(%r{(app|vendor)(/assets/\w+/(.+\.(css|scss|sass|js|coffee|html))).*}) { |m| "/assets/#{m[3]}" }
+  watch(%r{(app|vendor)(/assets/\w+/(.+\.(css|scss|sass|js|coffee|html))).*}) do |m|
+    "/assets/#{m[3]}"
+  end
 end

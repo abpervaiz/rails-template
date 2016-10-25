@@ -1,0 +1,91 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  DisplayCopNames: true
+  Exclude:
+    - "db/schema.rb"
+    - "db/structure.sql"
+    - "vendor/**/*"
+
+Rails:
+  Enabled: true
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Max: 15
+
+Style/CaseEquality:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+  Exclude:
+    - "app/controllers/**/*"
+    - "app/helpers/**/*"
+
+Style/EmptyLinesAroundBlockBody:
+  Exclude:
+    - "spec/**/*"
+    - "lib/tasks/*.rake"
+
+Style/EmptyLinesAroundClassBody:
+  EnforcedStyle: no_empty_lines
+
+Style/EmptyLinesAroundModuleBody:
+  EnforcedStyle: no_empty_lines
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/IndentationConsistency:
+  EnforcedStyle: rails
+
+Style/ModuleFunction:
+  EnforcedStyle: extend_self
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: no_comma
+
+Style/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: no_space
+  SpaceBeforeBlockParameters: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Exclude:
+    - "spec/**/*" # because let statements use braces for multiline blocks
+
+Style/BlockEndNewline:
+  Exclude:
+    - "spec/**/*" # because let statements use braces for multiline blocks
+
+Style/MultilineBlockLayout:
+  Exclude:
+    - "spec/**/*" # because let statements use braces for multiline blocks
+
+Style/Semicolon:
+  AllowAsExpressionSeparator: true
+  Exclude:
+    - "spec/**/*" # because sometimes we use this in expect or then blocks
+
+Style/RaiseArgs:
+  Enabled: false
