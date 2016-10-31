@@ -26,6 +26,7 @@ Style/ClassAndModuleChildren:
   Exclude:
     - "app/controllers/**/*"
     - "app/helpers/**/*"
+    - "config/application.rb"
 
 Style/EmptyLinesAroundBlockBody:
   Exclude:
