@@ -23,6 +23,11 @@ end
 environment "config.watchable_dirs['lib'] = [:rb]"
 
 # -----------------------------
+# DON'T AUTO INCLUDE HELPERS
+# -----------------------------
+environment "config.action_controller.include_all_helpers = false"
+
+# -----------------------------
 # DOCUMENTATION
 # -----------------------------
 run 'rm readme.md'
