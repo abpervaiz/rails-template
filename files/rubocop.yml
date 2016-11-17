@@ -9,6 +9,9 @@ AllCops:
 Rails:
   Enabled: true
 
+Lint/EndAlignment:
+  AlignWith: variable
+
 Metrics/AbcSize:
   Enabled: false
 
@@ -44,6 +47,9 @@ Style/FrozenStringLiteralComment:
 
 Style/IndentationConsistency:
   EnforcedStyle: rails
+
+Style/IndentHash:
+  EnforcedStyle: consistent
 
 Style/ModuleFunction:
   EnforcedStyle: extend_self
