@@ -251,6 +251,11 @@ after_bundle do
 # -----------------------------
 # SPEC FILES ADDITIONS
 # -----------------------------
+  spec_helper_additions = <<eos
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
+eos
+
   rails_helper_requires = <<~eos
 
     require 'webmock/rspec'
@@ -270,6 +275,9 @@ eos
                    after: "require 'rspec/rails'\n"
 
   insert_into_file 'spec/rails_helper.rb', rails_helper_additions,
+                   after: "RSpec.configure do |config|\n"
+
+  insert_into_file 'spec/spec_helper.rb', spec_helper_additions,
                    after: "RSpec.configure do |config|\n"
 
   file 'spec/support/database_cleaner.rb', IO.read("#{$path}/files/database_cleaner.rb")
