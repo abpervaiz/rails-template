@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   DisplayCopNames: true
   Exclude:
     - "db/schema.rb"
@@ -10,16 +10,19 @@ Rails:
   Enabled: true
 
 Lint/EndAlignment:
-  AlignWith: variable
+  EnforcedStyleAlignWith: variable
 
 Metrics/AbcSize:
   Enabled: false
 
 Metrics/LineLength:
-  Max: 100
+  Max: 120
 
 Metrics/MethodLength:
   Max: 15
+
+Metrics/BlockLength:
+  Enabled: false
 
 Style/CaseEquality:
   Enabled: false
@@ -30,6 +33,9 @@ Style/ClassAndModuleChildren:
     - "app/controllers/**/*"
     - "app/helpers/**/*"
     - "config/application.rb"
+
+Style/EmptyCaseCondition:
+  Enabled: false
 
 Style/EmptyLinesAroundBlockBody:
   Exclude:
