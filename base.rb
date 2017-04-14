@@ -69,7 +69,6 @@ append_file 'Gemfile', rails_assets
 
 gem_group :development do
   gem 'rubocop', require: false
-  gem 'heroku'
   gem 'better_errors'
   gem 'guard'
   gem 'rb-fsevent'
@@ -144,6 +143,7 @@ environment 'config.active_record.schema_format = :sql'
 # -----------------------------
 packages = []
 packages << 'phantomjs'
+packages << 'heroku'
 
 system 'brew tap homebrew/bundle'
 file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
