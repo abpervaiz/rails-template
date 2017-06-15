@@ -255,6 +255,10 @@ after_bundle do
 # -----------------------------
 # SPEC FILES ADDITIONS
 # -----------------------------
+  spec_helper_requires = <<~eos
+    require 'webmock/rspec'
+  eos
+
   spec_helper_additions = <<eos
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
@@ -262,7 +266,6 @@ eos
 
   rails_helper_requires = <<~eos
 
-    require 'webmock/rspec'
     require 'active_support/testing/time_helpers'
 
     # load all files in spec/support
@@ -281,6 +284,7 @@ eos
   insert_into_file 'spec/rails_helper.rb', rails_helper_additions,
                    after: "RSpec.configure do |config|\n"
 
+  prepend_file 'spec/spec_helper.rb', spec_helper_requires
   insert_into_file 'spec/spec_helper.rb', spec_helper_additions,
                    after: "RSpec.configure do |config|\n"
 
