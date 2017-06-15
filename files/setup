@@ -14,8 +14,8 @@ Dir.chdir APP_ROOT do
   system 'createuser -s <%= app_name %>'
   system 'createdb <%= app_name %>'
   system 'createdb <%= app_name %>_test'
-
-  system 'rake dev:reset'
+  system 'rails db:structure:load'
+  system 'rails db:seed'
 
   puts 'Homebrew...'
   system 'brew tap Homebrew/bundle'
