@@ -1,13 +1,12 @@
-//= require jquery3
-//= require jquery_ujs
+//= require jquery
+//= require rails-ujs
 //= require lodash/lodash
-//= require react/react.js
-//= require react/react-dom.js
-//= require velocity
-//= require velocity/velocity.ui
-//= require pubsub-js
-//= require rsvp/rsvp.js
-//= require immutable
+//= require react/dist/react
+//= require velocity-animate/velocity
+//= require velocity-animate/velocity.ui
+//= require pubsub-js/src/pubsub
+//= require rsvp/dist/rsvp
+//= require immutable/dist/immutable
 
 //= require interchange
 

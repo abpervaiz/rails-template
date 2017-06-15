@@ -52,19 +52,6 @@ gem 'lograge'
 gem 'contracts'
 gem 'wisper'
 
-rails_assets = <<-eos
-
-source 'https://rails-assets.org' do
-  gem 'rails-assets-normalize.css'
-  gem 'rails-assets-lodash'
-  gem 'rails-assets-react'
-  gem 'rails-assets-velocity'
-  gem 'rails-assets-pubsub-js'
-  gem 'rails-assets-rsvp'
-  gem 'rails-assets-immutable'
-end
-eos
-
 append_file 'Gemfile', rails_assets
 
 gem_group :development do
@@ -144,6 +131,7 @@ environment 'config.active_record.schema_format = :sql'
 packages = []
 packages << 'phantomjs'
 packages << 'heroku'
+packages << 'yarn'
 
 system 'brew tap homebrew/bundle'
 file 'Brewfile', render_file("#{$path}/files/Brewfile", packages: packages)
@@ -247,6 +235,22 @@ after_bundle do
   generate 'rspec:install'
 
   generate 'slowpoke:install'
+
+  # -----------------------------
+  # JAVASCRIPT
+  # -----------------------------
+  [
+    'jquery',
+    'normalize.css',
+    'lodash',
+    'react',
+    'velocity-animate',
+    'pubsub-js',
+    'rsvp',
+    'immutable'
+  ].each do |package|
+    run "yarn add #{package}"
+  end
 
 # -----------------------------
 # SPEC FILES ADDITIONS
