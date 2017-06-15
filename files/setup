@@ -7,6 +7,9 @@ Dir.chdir APP_ROOT do
   puts 'Gems...'
   system 'bundle check || bundle install'
 
+  puts 'JavaScript Packages...'
+  system 'yarn install'
+
   puts 'Database...'
   system 'dropdb <%= app_name %>'
   system 'dropdb <%= app_name %>_test'
