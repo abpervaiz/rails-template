@@ -1,1 +1,1 @@
-<% packages.each do |pkg| %><%= "brew '#{pkg}'" %><% end %>
+<% packages.each do |pkg| %><%= "brew '#{pkg}'\n" %><% end %>
