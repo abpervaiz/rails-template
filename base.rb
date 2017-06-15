@@ -52,8 +52,6 @@ gem 'lograge'
 gem 'contracts'
 gem 'wisper'
 
-append_file 'Gemfile', rails_assets
-
 gem_group :development do
   gem 'rubocop', require: false
   gem 'better_errors'
