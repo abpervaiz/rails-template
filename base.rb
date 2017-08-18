@@ -49,7 +49,6 @@ gem 'active_model_serializers'
 gem 'hamlit'
 gem 'autoprefixer-rails'
 gem 'lograge'
-gem 'contracts'
 gem 'wisper'
 
 gem_group :development do
